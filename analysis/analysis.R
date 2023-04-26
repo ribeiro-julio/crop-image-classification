@@ -10,8 +10,6 @@ library(mlr)
 # Reading data
 # ---------------------------------------------
 
-
-
 data1 = read.csv("../results/dataset_1_results.csv")
 df1   = melt(data1, id.vars = 1)
 df1$dataset = "dataset1"
@@ -47,33 +45,6 @@ g = g + facet_grid(~dataset) + theme_bw()
 g = g + labs(x = "Algorithm", y = "Accuracy")
 g = g + theme(axis.text.x=element_text(angle = 90, hjust = 1))
 ggsave(g, filename = "boxplot.pdf", width = 7.55, height = 3.16)
-
-# ---------------------------------------------
-# RF plot using the best dataset (dataset2)
-# ---------------------------------------------
-
-
-# TODO: generate dataset
-# cat(" @ Plot: Random Forest (importance) \n")
-
-# dataset = read.csv()
-# mlrTask = mlr::makeClassifTask(df_all2_resc[,-1], id = "test", target = "rotulo")
-# lrn     = mlr::makeLearner("classif.ranger", importance = "permutation")
-# model   = mlr::train(task = mlrTask, learner = lrn)
-
-# trueModel = model$learner.model
-
-# importance = as.data.frame(trueModel$variable.importance)
-# rf.df = cbind(rownames(importance), importance)
-# rownames(rf.df) = NULL
-# colnames(rf.df) = c("Feature", "Importance")
-
-# g_importance = ggplot(rf.df, aes(x = reorder(Feature, Importance), y = Importance))
-# g_importance = g_importance  + geom_col(width = 0.8, fill="lightblue", col="darkblue")
-# g_importance = g_importance  + labs(y="Importance", x = "Feature") + coord_flip() + theme_bw() 
-# # g_importance # for debug
-# ggsave(g_importance, file = "plots/fig_randomForest.pdf", units = "in", width = 9, 
-# 	height = 6, dpi = 300, pointsize = 20)
 
 
 # ---------------------------------------------
