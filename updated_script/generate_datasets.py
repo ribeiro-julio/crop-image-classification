@@ -45,7 +45,7 @@ def main():
         ds_2.append({"im_path": im_path, "Y": Y, "X": ds_2_X})
         ds_3.append({"im_path": im_path, "Y": Y, "X": ds_3_X})
 
-        print("{:.2f}".format(i/len(desc)*100), " %\r", end = ""),
+        print("{:.2f}".format(i/len(desc)*100), " %\r", end = "")
 
     print("\nnumber of rows:", len(ds_1), len(ds_2), len(ds_3))
     print("number of X elements of first row:", len(ds_1[0]["X"]), len(ds_2[0]["X"]), len(ds_3[0]["X"]))
