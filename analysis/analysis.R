@@ -64,6 +64,7 @@ df.perf = data.frame(do.call("rbind", obj))
 df.perf$perf = rep(c("mean", "sd", "media"), time = 3)
 df.perf$dataset = rep(c("dataset1", "dataset2", "dataset3"),each = 3)
 print(df.perf)
+write.csv(df.perf, file = "../data/overallPerformances.csv")
 
 # ---------------------------------------------
 # Data frame for statistical validation
