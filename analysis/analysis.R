@@ -43,6 +43,29 @@ g = g + theme(axis.text.x=element_text(angle = 90, hjust = 1))
 ggsave(g, filename = "boxplot.pdf", width = 7.55, height = 3.16)
 
 # ---------------------------------------------
+# Predictions
+# ---------------------------------------------
+
+pred2 = read.csv("../results/predictions_dataset_2.csv")
+pred2$dataset = "dataset2"
+mpred2 = melt(pred2, id.vars = c(1, 9))
+
+pred.full = mpred2
+pred.full$value = as.factor(pred.full$value)
+zero.ids = which(pred.full$value == 0)
+
+tmp = rbind(pred.full[zero.ids, ], pred.full[-zero.ids, ])
+tmp$df_index = factor(tmp$df_index, levels = unique(tmp$df_index))
+
+g2 = ggplot(tmp, aes(x = df_index, y = variable, fill = value, colour = value))
+g2 = g2 + geom_tile()
+g2 = g2 + scale_fill_manual(values = c("lightgrey", "black"))
+g2 = g2 + scale_colour_manual(values = c("lightgrey", "black"))
+g2 = g2 + theme(axis.text.x = element_blank(), axis.ticks = element_blank())
+g2 = g2 + labs(x = "Image index", y = "Algorithm", fill = "Class", colour = "Class")
+ggsave(g2, filename = "predictionsPlot.pdf", width = 7.55, height = 2.44)
+
+# ---------------------------------------------
 # Overall performance
 # ---------------------------------------------
 
