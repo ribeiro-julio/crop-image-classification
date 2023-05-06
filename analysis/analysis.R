@@ -42,7 +42,6 @@ g = g + labs(x = "Algorithm", y = "Accuracy")
 g = g + theme(axis.text.x=element_text(angle = 90, hjust = 1))
 ggsave(g, filename = "boxplot.pdf", width = 7.55, height = 3.16)
 
-
 # ---------------------------------------------
 # Overall performance
 # ---------------------------------------------
@@ -76,6 +75,47 @@ write.csv(df.friedman, file = "../data/dataForFriedman.csv")
 
 # https://github.com/gabrieljaguiar/nemenyi
 # python3 nemenyi.py examples/dataForFriedman.csv cropOutput.tex --h
+
+# ---------------------------------------------
+# Wilcoxon per dataset
+# ---------------------------------------------
+
+cat(" *** Statistical Evaluations *** ")
+obj1 = suppressWarnings(wilcox.test(x = data1$svc, y = data1$rf, conf.level = 0.95))
+print(obj1$p.value)
+cat("@ SVM vs RF - Dataset1: ")
+if(obj1$p.value < 0.05) {
+	cat("There is statistical difference between the methods!\n")
+} else {
+	cat("There is no statistical difference between the methods!\n")
+}
+
+obj2 = suppressWarnings(wilcox.test(x = data2$svc, y = data2$rf, conf.level = 0.95))
+print(obj2$p.value)
+cat("@ SVM vs RF - Dataset2: ")
+if(obj2$p.value < 0.05) {
+	cat("There is statistical difference between the methods!\n")
+} else {
+	cat("There is no statistical difference between the methods!\n")
+}
+
+svc1 = suppressWarnings(wilcox.test(x = data1$svc, y = data2$svc, conf.level = 0.95))
+print(svc1$p.value)
+cat("@ SVM - Dataset1 vs SVM - Dataset2: ")
+if(svc1$p.value < 0.05) {
+	cat("There is statistical difference between the methods!\n")
+} else {
+	cat("There is no statistical difference between the methods!\n")
+}
+
+rf1  = suppressWarningswilcox.test(x = data1$rf, y = data2$rf, conf.level = 0.95))
+print(rf1$p.value)
+cat("@ RF - Dataset1 vs RF - Dataset2: ")
+if(rf1$p.value < 0.05) {
+	cat("There is statistical difference between the methods!\n")
+} else {
+	cat("There is no statistical difference between the methods!\n")
+}
 
 # ---------------------------------------------
 # ---------------------------------------------
