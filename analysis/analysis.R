@@ -83,6 +83,35 @@ g2 = g2 + theme(axis.text.x = element_blank(), axis.ticks = element_blank())
 g2 = g2 + labs(x = "Image index", y = "Algorithm", fill = "Class", colour = "Class")
 ggsave(g2, filename = "predictionsPlot_dataset1.pdf", width = 7.55, height = 2.44)
 
+
+# ---------------------------------------------
+# Hard examples
+# ---------------------------------------------
+
+cat(" - Identifying missclassified examples (dataset1) \n")
+
+
+aux = lapply(1:nrow(pred2), function(i) {
+	example = pred2[i,]
+	tmp = NULL
+	if(all(example[3:7] != example$Y)) {
+		tmp = example$df_index
+	} 
+	return (tmp)
+})
+
+hard.ids = unlist(aux)
+sel.ids  = which(pred2$df_index %in% hard.ids)
+
+hard.images = pred2[sel.ids, ]
+hard.images = hard.images[order(hard.images$Y),]
+
+table(hard.images$Y)
+ # 0  1 
+# 18 29
+
+write.csv(hard.images, file = "../data/hardImages_dataset1.csv")
+
 # ---------------------------------------------
 # Overall performance
 # ---------------------------------------------
