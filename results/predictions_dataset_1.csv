@@ -1,4 +1,4 @@
-df_index,Y,Y_pred_knn,Y_pred_bayes,Y_pred_dt,Y_pred_rf,Y_pred_svc,Y_pred_mpl
+df_index,Y,KNN,NB,DT,RF,SVC,MLP
 2113,0,0,0,0,0,0,0
 2614,1,1,1,1,1,1,0
 2782,0,1,0,0,0,0,0
