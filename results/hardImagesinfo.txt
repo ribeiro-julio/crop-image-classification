@@ -1,0 +1,11 @@
+Y = 1 (coffee)
+montesanto 15
+guaxupé  7
+arceburgo 5
+guaranesia 2
+
+Y = 0 (noncoffee)
+montesanto 4
+guaxupé  6
+arceburgo 0
+guaranesia 7

@@ -117,7 +117,13 @@ write.csv(hard.images, file = "../data/hardImages_dataset1.csv")
 # ---------------------------------------------
 
 # TODO: fachar imagens problematicas, onde todos os algoritmos erraram
-df.error = read.csv("../data/hardImages_dataset1_withPath.csv")
+coffee.images = list.files(path = "../dataset-brazilian_coffee_scenes/hardImages/coffee/", full.names=TRUE)
+
+image.name = coffee.images[1]
+image = imager::load.image(image.name)
+
+# Teve imagens que foram preditas corretas em todos os algoritmos?
+# As vezes dá pra gente comprar essas que foram corretas com as que foram incorretas]
 
 # ---------------------------------------------
 # Overall performance
