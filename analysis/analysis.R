@@ -66,6 +66,13 @@ g2 = g2 + labs(x = "Image index", y = "Algorithm", fill = "Class", colour = "Cla
 ggsave(g2, filename = "predictionsPlot.pdf", width = 7.55, height = 2.44)
 
 # ---------------------------------------------
+# Problematic images
+# ---------------------------------------------
+
+df.error = pred2
+# TODO: fachar imagens problematicas, onde todos os algoritmos erraram
+
+# ---------------------------------------------
 # Overall performance
 # ---------------------------------------------
 
