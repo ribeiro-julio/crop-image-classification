@@ -116,8 +116,8 @@ write.csv(hard.images, file = "../data/hardImages_dataset1.csv")
 # Problematic images
 # ---------------------------------------------
 
-df.error = pred2
 # TODO: fachar imagens problematicas, onde todos os algoritmos erraram
+df.error = read.csv("../data/hardImages_dataset1_withPath.csv")
 
 # ---------------------------------------------
 # Overall performance
