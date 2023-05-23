@@ -1,27 +1,24 @@
 \begin{figure}
 \centering
 \begin{tikzpicture}[xscale=2]
-\node (Label) at (1.397413512603686, 0.7){\tiny{CD = 0.79}}; % the label
-\draw[decorate,decoration={snake,amplitude=.4mm,segment length=1.5mm,post length=0mm},very thick, color = black] (1.0,0.5) -- (1.794827025207372,0.5);
-\foreach \x in {1.0, 1.794827025207372} \draw[thick,color = black] (\x, 0.4) -- (\x, 0.6);
+\node (Label) at (1.5857974598153803, 0.7){\tiny{CD = 0.64}}; % the label
+\draw[decorate,decoration={snake,amplitude=.4mm,segment length=1.5mm,post length=0mm},very thick, color = black] (1.2,0.5) -- (1.9715949196307605,0.5);
+\foreach \x in {1.2, 1.9715949196307605} \draw[thick,color = black] (\x, 0.4) -- (\x, 0.6);
  
-\draw[gray, thick](1.0,0) -- (6.0,0);
-\foreach \x in {1.0,2.0,3.0,4.0,5.0,6.0} \draw (\x cm,1.5pt) -- (\x cm, -1.5pt);
-\node (Label) at (1.0,0.2){\tiny{1}};
-\node (Label) at (2.0,0.2){\tiny{2}};
-\node (Label) at (3.0,0.2){\tiny{3}};
-\node (Label) at (4.0,0.2){\tiny{4}};
-\node (Label) at (5.0,0.2){\tiny{5}};
-\node (Label) at (6.0,0.2){\tiny{6}};
-\draw[decorate,decoration={snake,amplitude=.4mm,segment length=1.5mm,post length=0mm},very thick, color = black](1.3611111111111112,-0.25) -- (1.6444444444444444,-0.25);
-\draw[decorate,decoration={snake,amplitude=.4mm,segment length=1.5mm,post length=0mm},very thick, color = black](4.3500000000000005,-0.4) -- (4.777777777777778,-0.4);
-\draw[decorate,decoration={snake,amplitude=.4mm,segment length=1.5mm,post length=0mm},very thick, color = black](4.677777777777778,-0.55) -- (5.316666666666666,-0.55);
-\node (Point) at (1.4111111111111112, 0){};\node (Label) at (0.5,-0.8500000000000001){\scriptsize{svc}}; \draw (Point) |- (Label);
-\node (Point) at (1.5944444444444443, 0){};\node (Label) at (0.5,-1.1500000000000001){\scriptsize{rf}}; \draw (Point) |- (Label);
-\node (Point) at (3.6, 0){};\node (Label) at (0.5,-1.4500000000000002){\scriptsize{nb}}; \draw (Point) |- (Label);
-\node (Point) at (5.266666666666667, 0){};\node (Label) at (6.5,-0.8500000000000001){\scriptsize{mpl}}; \draw (Point) |- (Label);
-\node (Point) at (4.727777777777778, 0){};\node (Label) at (6.5,-1.1500000000000001){\scriptsize{dt}}; \draw (Point) |- (Label);
-\node (Point) at (4.4, 0){};\node (Label) at (6.5,-1.4500000000000002){\scriptsize{knn}}; \draw (Point) |- (Label);
+\draw[gray, thick](1.2,0) -- (6.0,0);
+\foreach \x in {1.2,2.4,3.6,4.8,6.0} \draw (\x cm,1.5pt) -- (\x cm, -1.5pt);
+\node (Label) at (1.2,0.2){\tiny{1}};
+\node (Label) at (2.4,0.2){\tiny{2}};
+\node (Label) at (3.6,0.2){\tiny{3}};
+\node (Label) at (4.8,0.2){\tiny{4}};
+\node (Label) at (6.0,0.2){\tiny{5}};
+\draw[decorate,decoration={snake,amplitude=.4mm,segment length=1.5mm,post length=0mm},very thick, color = black](1.6433333333333333,-0.25) -- (1.9633333333333334,-0.25);
+\draw[decorate,decoration={snake,amplitude=.4mm,segment length=1.5mm,post length=0mm},very thick, color = black](5.043333333333334,-0.4) -- (5.289999999999999,-0.4);
+\node (Point) at (1.6933333333333334, 0){};\node (Label) at (0.5,-0.65){\scriptsize{svc}}; \draw (Point) |- (Label);
+\node (Point) at (1.9133333333333333, 0){};\node (Label) at (0.5,-0.95){\scriptsize{rf}}; \draw (Point) |- (Label);
+\node (Point) at (5.239999999999999, 0){};\node (Label) at (6.5,-0.65){\scriptsize{dt}}; \draw (Point) |- (Label);
+\node (Point) at (5.093333333333334, 0){};\node (Label) at (6.5,-0.95){\scriptsize{knn}}; \draw (Point) |- (Label);
+\node (Point) at (4.0600000000000005, 0){};\node (Label) at (6.5,-1.25){\scriptsize{nb}}; \draw (Point) |- (Label);
 \end{tikzpicture}
 \caption{Nemenyi - dataForFriedman.csv}
 \label{fig:nemenyi}
