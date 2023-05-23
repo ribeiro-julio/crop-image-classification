@@ -116,14 +116,45 @@ write.csv(hard.images, file = "../data/hardImages_dataset1.csv")
 # Problematic images
 # ---------------------------------------------
 
-# TODO: fachar imagens problematicas, onde todos os algoritmos erraram
+# https://cran.r-project.org/web/packages/imager/vignettes/gettingstarted.html#example-1-histogram-equalisation
+
 coffee.images = list.files(path = "../dataset-brazilian_coffee_scenes/hardImages/coffee/", full.names=TRUE)
+aux.img = lapply(coffee.images, function(image.name) {
+	print(image.name)
+	image = imager::load.image(image.name)
+	bdf = as.data.frame(image)
+	bdf = dplyr::mutate(bdf,channel=factor(cc,labels=c('R','G','NI')))
+	bdf$image.name = image.name 
+	bdf$target = "coffee"
+	return(bdf)
+})
+df.coffee = do.call("rbind", aux.img)
 
-image.name = coffee.images[1]
-image = imager::load.image(image.name)
 
-# Teve imagens que foram preditas corretas em todos os algoritmos?
-# As vezes dá pra gente comprar essas que foram corretas com as que foram incorretas]
+non.coffee.images = list.files(path = "../dataset-brazilian_coffee_scenes/hardImages/noncoffee/", full.names=TRUE)
+aux.img = lapply(non.coffee.images, function(image.name) {
+	print(image.name)
+	image = imager::load.image(image.name)
+	bdf = as.data.frame(image)
+	bdf = dplyr::mutate(bdf,channel=factor(cc,labels=c('R','G','NI')))
+	bdf$image.name = image.name 
+	bdf$target = "noncoffee"
+	return(bdf)
+})
+df.non.coffee = do.call("rbind", aux.img)
+
+
+# ---------------------
+# histogram
+# ---------------------
+
+df.hist = rbind(df.coffee, df.non.coffee)
+
+hist = ggplot(df.hist, aes(value,col=channel, fill=channel))
+hist = hist + geom_histogram(bins=30) + facet_grid(target ~ channel, scales = "free")
+hist = hist + labs(x = "", y = "Count") + theme_bw()
+#hist
+ggsave(hist, file = "hardImagesPixelDistribution.pdf", width = 6.76, height = 3.18)
 
 # ---------------------------------------------
 # Overall performance
