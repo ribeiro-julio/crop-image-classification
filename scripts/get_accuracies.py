@@ -28,6 +28,10 @@ def get_accuracies(dataset):
     for i in range(0, 30):
         x_train, x_test, y_train, y_test = train_test_split(df.drop("Y", axis = 1), df["Y"], test_size = 0.3, shuffle = True)
         
+        # TODO: replace
+        # x_train, x_test, y_train, y_test = train_test_split(df.drop("Y", axis = 1), df["Y"], test_size = 0.3, 
+            shuffle = True, stratify =  df["Y"], random_state=i)
+
         knn = KNeighborsClassifier().fit(x_train, y_train)
         y_pred_knn = knn.predict(x_test)
         knn_acc.append(metrics.accuracy_score(y_test, y_pred_knn))
