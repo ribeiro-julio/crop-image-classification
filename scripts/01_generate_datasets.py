@@ -1,13 +1,27 @@
+# --------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------
+
 from PIL import Image
 import pandas as pd
 from statistics import mean
 
+# --------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------
+
 def main():
-    print("generating datasets...")
+
+    print("* Generating datasets...")
+
+    # ---------------------------
+    # Description file with all the images' paths
+    # ---------------------------
 
     desc_file = open("../dataset-brazilian_coffee_scenes/desc.txt")
     desc = desc_file.read().split("\n")
     desc_file.close()
+
+    # ---------------------------
+    # ---------------------------
 
     ds_1 = []
     ds_2 = []
@@ -47,16 +61,28 @@ def main():
 
         print("{:.2f}".format(i/len(desc)*100), " %\r", end = "")
 
+    # ---------------------------
+    # ---------------------------
+
     print("\nnumber of rows:", len(ds_1), len(ds_2), len(ds_3))
     print("number of X elements of first row:", len(ds_1[0]["X"]), len(ds_2[0]["X"]), len(ds_3[0]["X"]))
 
+    # ---------------------------
+    # ---------------------------
+
     print("saving datasets...")
 
-    pd.DataFrame.from_dict(ds_1).to_csv("./input/dataset_1.csv", sep = ";", index = False)
-    pd.DataFrame.from_dict(ds_2).to_csv("./input/dataset_2.csv", sep = ";", index = False)
-    pd.DataFrame.from_dict(ds_3).to_csv("./input/dataset_3.csv", sep = ";", index = False)
+    pd.DataFrame.from_dict(ds_1).to_csv("./../data/dataset_1.csv", sep = ";", index = False)
+    pd.DataFrame.from_dict(ds_2).to_csv("./../data/dataset_2.csv", sep = ";", index = False)
+    pd.DataFrame.from_dict(ds_3).to_csv("./../data/dataset_3.csv", sep = ";", index = False)
 
-    print("done.")
+    print("* Done !")
+
+# --------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     main()
+
+# --------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------

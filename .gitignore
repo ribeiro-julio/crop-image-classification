@@ -9,6 +9,8 @@ __pycache__/
 #MacOs files
 .DS_Store
 
+data/dataset_*
+
 # Distribution / packaging
 .Python
 build/
