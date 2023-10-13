@@ -58,7 +58,7 @@ def get_predictions(dataset):
     perf_reps = []
     pred_reps = []
 
-    for i in range(0, 4):
+    for i in range(0, 30):
         print("############################")
         print(" * Running for seed = ", i)
         print("############################")
@@ -112,8 +112,7 @@ def get_predictions(dataset):
 # --------------------------------------------------------------------------------------------------------------------
 
 def main():
-    # for dataset in ["dataset_1.csv", "dataset_2.csv", "dataset_3.csv"]:
-    for dataset in ["dataset_3.csv"]:  
+    for dataset in ["dataset_1.csv", "dataset_2.csv", "dataset_3.csv"]:
         print(dataset.replace(".csv", ""))
         get_predictions(dataset)
         print("-------------------------------------------")
