@@ -29,8 +29,6 @@ def get_predictions(dataset):
     # TODO: Running just if it was not executed before
     # ---------------------------------------------------------
 
-
-
     # ---------------------------------------------------------
     # Creating dataset using pandas
     # ---------------------------------------------------------
@@ -65,8 +63,6 @@ def get_predictions(dataset):
     pred_reps = []
 
     # TODO: paralellize into different threads
-
-
     for i in range(0, 30):
         print("############################")
         print(" * Running for seed = ", i)
