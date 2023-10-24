@@ -108,7 +108,7 @@ def trainCNNs(df):
 
 	    # Callbacks
 	    early_stopper = EarlyStopping(monitor="val_loss", mode="min", patience=10, verbose=1)
-	    csv_logger    = CSVLogger(f"./../results/log_history_cnn_seed_{seed}.csv", separator=",", append=False)
+	    csv_logger    = CSVLogger(f"./../results/cnnLogs/log_history_cnn_seed_{seed}.csv", separator=",", append=False)
 
 	    print(" - training CNN")
 
