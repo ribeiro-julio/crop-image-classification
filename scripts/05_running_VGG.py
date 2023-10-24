@@ -32,13 +32,13 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 def get_VGG16_model_Keras(input_shape=(64,64,3), classes=2) :
 
 	VGGmodel = Sequential() 
-	obj = VGG16(
+	baseModel = VGG16(
 		input_shape=input_shape,
 		weights= None,
 		include_top=False,
 	)
-	obj.trainable = False
-	VGGmodel.add(obj)
+	baseModel.trainable = False
+	VGGmodel.add(baseModel)
 	VGGmodel.add(Flatten()) 
 	VGGmodel.add(Dense(4096,activation = 'relu'))
 	VGGmodel.add(BatchNormalization())
@@ -46,7 +46,7 @@ def get_VGG16_model_Keras(input_shape=(64,64,3), classes=2) :
 	VGGmodel.add(Dense(2048,activation = 'relu'))
 	VGGmodel.add(BatchNormalization())
 	VGGmodel.add(Dropout(0.2, input_shape=(2048,)))
-	VGGmodel.add(Dense(1,activation = 'softmax'))
+	VGGmodel.add(Dense(1,activation = 'sigmoid'))
 
 	return(VGGmodel)
 
@@ -78,7 +78,7 @@ def get_VGG16_model_raw(input_shape=(64,64,3)):
 	VGGmodel.add(Flatten())
 	VGGmodel.add(Dense(units=4096,activation="relu"))
 	VGGmodel.add(Dense(units=2048,activation="relu"))
-	VGGmodel.add(Dense(units=1, activation="softmax"))
+	VGGmodel.add(Dense(units=1, activation="sigmoid"))
 	return(VGGmodel)
 
 # --------------------------------------------------------------------------------------------------------------------
