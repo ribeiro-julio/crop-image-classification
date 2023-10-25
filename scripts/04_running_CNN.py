@@ -87,7 +87,7 @@ def trainCNNs(df):
 	    # Defining the prediction model (CNN)
 	    # ----------------------------
 
-	    print(" - defining CNN model")
+	    print(" - defining VGG16 model")
 	    model = models.Sequential()
 	    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)))
 	    model.add(layers.MaxPooling2D((2, 2)))
