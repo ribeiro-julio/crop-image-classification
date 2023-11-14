@@ -8,8 +8,6 @@ import numpy as np
 
 from PIL import Image
 
-# import tensorflow as tf
-
 from tensorflow import keras
 from tensorflow.keras import layers, models
 from tensorflow.keras.losses import BinaryCrossentropy
@@ -25,7 +23,6 @@ def trainCNNs(df):
 	all_performances = []
 	all_predictions  = []
 
-	# TODO: paralellize into different threads
 	# for i in range(0, 3): #for debug
 	for seed in range(0, 30):
 
@@ -111,7 +108,7 @@ def trainCNNs(df):
 
 	    # Callbacks
 	    early_stopper = EarlyStopping(monitor="val_loss", mode="min", patience=10, verbose=1)
-	    csv_logger    = CSVLogger(f"./../results/log_history_cnn_seed_{seed}.csv", separator=",", append=False)
+	    csv_logger    = CSVLogger(f"./../results/cnnLogs/log_history_cnn_seed_{seed}.csv", separator=",", append=False)
 
 	    print(" - training CNN")
 
