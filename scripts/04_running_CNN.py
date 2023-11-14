@@ -115,8 +115,8 @@ def trainCNNs(df):
 
 	    print(" - training CNN")
 
-	    history  = model.fit(train_images, train_labels, epochs=100, validation_split=0.2,
-	    	batch_size=1, callbacks=[early_stopper, csv_logger]) 
+	    history  = model.fit(train_images, train_labels, epochs=100, validation_split=0.3,
+	    	batch_size=16, callbacks=[early_stopper, csv_logger]) 
 
 	    # ----------------------------
 	    # Evaluating predictions
