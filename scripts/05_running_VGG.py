@@ -29,7 +29,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
 
-def get_VGG16_model_Keras(input_shape=(64,64,3), classes=2) :
+def get_VGG16_model_Keras(input_shape=(64,64,3)) :
 
 	VGGmodel = Sequential() 
 	baseModel = VGG16(
@@ -50,36 +50,6 @@ def get_VGG16_model_Keras(input_shape=(64,64,3), classes=2) :
 
 	return(VGGmodel)
 
-
-# --------------------------------------------------------------------------------------------------------------------
-# --------------------------------------------------------------------------------------------------------------------
-
-def get_VGG16_model_raw(input_shape=(64,64,3)):
-
-	VGGmodel = Sequential()
-	VGGmodel.add(Conv2D(input_shape=input_shape,filters=64,kernel_size=(3,3),padding="same", activation="relu"))
-	VGGmodel.add(Conv2D(filters=64,kernel_size=(3,3),padding="same", activation="relu"))
-	VGGmodel.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
-	VGGmodel.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
-	VGGmodel.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
-	VGGmodel.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
-	VGGmodel.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-	VGGmodel.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
-	VGGmodel.add(Flatten())
-	VGGmodel.add(Dense(units=4096,activation="relu"))
-	VGGmodel.add(Dense(units=2048,activation="relu"))
-	VGGmodel.add(Dense(units=1, activation="sigmoid"))
-	return(VGGmodel)
 
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
@@ -161,7 +131,6 @@ def trainVGG16(df):
 	    # ----------------------------
 
 	    print(" - defining VGG16 model")
-	    # model = get_VGG16_model_raw(input_shape=(64,64,3))
 	    model = get_VGG16_model_Keras(input_shape=(64,64,3))
 	    
 	    model.summary()
@@ -177,10 +146,9 @@ def trainVGG16(df):
 	    csv_logger    = CSVLogger(f"./../results/vgg16/log_history_vgg16_seed_{seed}.csv", separator=",", append=False)
 
 	    print(" - training VGG16")
-	    # history  = model.fit(train_images, train_labels, epochs=100, validation_split=0.2,
-	    history  = model.fit(model.fit(ImageDataGenerator().flow(train_images, train_labels, batch_size=32), 
-	    	callbacks=[early_stopper, csv_logger], epochs=10)) 
-	    
+	    history  = model.fit(train_images, train_labels, epochs=100, validation_split=0.3,
+	    	batch_size=16, callbacks=[early_stopper, csv_logger]) 
+
 	    # ----------------------------
 	    # Evaluating predictions
 	    # ----------------------------
