@@ -111,7 +111,7 @@ def trainVGG16(df):
 	all_performances = []
 	all_predictions  = []
 
-	for seed in range(0, 3): #for debug
+	for seed in range(0, 30): #for debug
 	# for seed in range(0, 30):
 
 	    print("############################")
@@ -142,7 +142,7 @@ def trainVGG16(df):
 
 	    # Callbacks
 	    # checkpoint = ModelCheckpoint("vgg16_1.h5", monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
-	    early_stopper = EarlyStopping(monitor="binary_accuracy", patience=10, verbose=1)
+	    early_stopper = EarlyStopping(monitor="val_loss", mode="min", patience=10, verbose=1)
 	    csv_logger    = CSVLogger(f"./../results/vgg16/log_history_vgg16_seed_{seed}.csv", separator=",", append=False)
 
 	    print(" - training VGG16")
