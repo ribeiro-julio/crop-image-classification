@@ -1,6 +1,8 @@
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
 
+import os 
+
 # handling data frames
 import pandas as pd
 
@@ -18,12 +20,32 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
 
+def get_CNN_model(input_shape=(64,64,3)) :
+
+	CNNmodel = models.Sequential()
+	CNNmodel.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
+	CNNmodel.add(layers.MaxPooling2D((2, 2)))
+	CNNmodel.add(layers.Dropout(0.25))
+	CNNmodel.add(layers.Conv2D(64, (3, 3), activation='relu'))
+	CNNmodel.add(layers.MaxPooling2D((2, 2)))
+	CNNmodel.add(layers.Dropout(0.25))
+	CNNmodel.add(layers.Conv2D(64, (3, 3), activation='relu'))
+	CNNmodel.add(layers.Flatten())
+	CNNmodel.add(layers.Dense(64, activation='relu'))
+	CNNmodel.add(layers.Dropout(0.5))
+	CNNmodel.add(layers.Dense(1, activation="sigmoid"))
+
+	return(CNNmodel)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------
+
 def trainCNNs(df):
 
 	all_performances = []
 	all_predictions  = []
 
-	# for i in range(0, 3): #for debug
 	for seed in range(0, 30):
 
 	    print("############################")
@@ -49,9 +71,7 @@ def trainCNNs(df):
 	    train_images = []
 	    for i in range(0, len(df_training)):
 	    	example = df_training.iloc[i]
-	    	# Loading one image 
 	    	img = Image.open(example["im_path"]) #.getdata()
-	    	# converting image to numpy array
 	    	train_images.append(np.array(img))
 	    train_images = np.array(train_images)
 	    # >>> train_images .shape
@@ -64,9 +84,7 @@ def trainCNNs(df):
 	    test_images = []
 	    for i in range(0, len(df_testing)):
 	    	example = df_testing.iloc[i]
-	    	# Loading one image 
 	    	img = Image.open(example["im_path"]) #.getdata()
-	    	# converting image to numpy array
 	    	test_images.append(np.array(img))
 	    test_images = np.array(test_images)
 	    # >>> test_images.shape
@@ -87,21 +105,10 @@ def trainCNNs(df):
 	    # Defining the prediction model (CNN)
 	    # ----------------------------
 
-	    print(" - defining VGG16 model")
-	    model = models.Sequential()
-	    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)))
-	    model.add(layers.MaxPooling2D((2, 2)))
-	    model.add(layers.Dropout(0.25))
-	    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-	    model.add(layers.MaxPooling2D((2, 2)))
-	    model.add(layers.Dropout(0.25))
-	    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-	    model.add(layers.Flatten())
-	    model.add(layers.Dense(64, activation='relu'))
-	    model.add(layers.Dropout(0.5))
-	    model.add(layers.Dense(1, activation="sigmoid"))
-
+	    print(" - defining CNN simple model")
+	    model = get_CNN_model(input_shape=(64,64,3))
 	    model.compile(optimizer='adam', loss=BinaryCrossentropy(), metrics=['binary_accuracy', 'accuracy'])
+	   
 	    # ----------------------------
 	    # Traninig the algorithm
 	    # ----------------------------
@@ -144,7 +151,16 @@ def trainCNNs(df):
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
+
+	path = "./../results/cnnLogs/"
+	if not os.path.exists(path):
+		os.makedirs(path)
+		print("The new directory is created!")
+	else:
+		print("cnnLogs folder already exists!")
+
 	df = pd.read_csv(f"./../data/folds_coffee_dataset.csv", sep = ",")
+
 	(pred_results, perf_results) = trainCNNs(df=df)
 	perf_results.to_csv("./../results/performances_cnn.csv", index = False)
 	pred_results.to_csv("./../results/predictions_cnn.csv", index = False)
