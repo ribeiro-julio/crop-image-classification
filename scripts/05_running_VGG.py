@@ -34,18 +34,13 @@ def get_VGG16_model_Keras(input_shape=(64,64,3)) :
 	VGGmodel = Sequential() 
 	baseModel = VGG16(
 		input_shape=input_shape,
-		weights= None,
+		weights= 'imagenet',
 		include_top=False,
 	)
 	baseModel.trainable = False
 	VGGmodel.add(baseModel)
 	VGGmodel.add(Flatten()) 
 	VGGmodel.add(Dense(4096,activation = 'relu'))
-	VGGmodel.add(BatchNormalization())
-	VGGmodel.add(Dropout(0.2, input_shape=(4096,)))
-	VGGmodel.add(Dense(2048,activation = 'relu'))
-	VGGmodel.add(BatchNormalization())
-	VGGmodel.add(Dropout(0.2, input_shape=(2048,)))
 	VGGmodel.add(Dense(1,activation = 'sigmoid'))
 
 	return(VGGmodel)
@@ -68,9 +63,7 @@ def readImagesFromDF(df, seed):
     train_images = []
     for i in range(0, len(df_training)):
     	example = df_training.iloc[i]
-    	# Loading one image 
     	img = Image.open(example["im_path"]) #.getdata()
-    	# converting image to numpy array
     	train_images.append(np.array(img))
     train_images = np.array(train_images)
     # >>> train_images .shape
@@ -83,9 +76,7 @@ def readImagesFromDF(df, seed):
     test_images = []
     for i in range(0, len(df_testing)):
     	example = df_testing.iloc[i]
-    	# Loading one image 
     	img = Image.open(example["im_path"]) #.getdata()
-    	# converting image to numpy array
     	test_images.append(np.array(img))
     test_images = np.array(test_images)
     # >>> test_images.shape
@@ -111,8 +102,7 @@ def trainVGG16(df):
 	all_performances = []
 	all_predictions  = []
 
-	for seed in range(0, 30): #for debug
-	# for seed in range(0, 30):
+	for seed in range(0, 30):
 
 	    print("############################")
 	    print(" * Running for seed = ", seed)
@@ -141,7 +131,6 @@ def trainVGG16(df):
 	    # ----------------------------
 
 	    # Callbacks
-	    # checkpoint = ModelCheckpoint("vgg16_1.h5", monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
 	    early_stopper = EarlyStopping(monitor="val_loss", mode="min", patience=10, verbose=1)
 	    csv_logger    = CSVLogger(f"./../results/vgg16/log_history_vgg16_seed_{seed}.csv", separator=",", append=False)
 
@@ -184,6 +173,8 @@ if __name__ == "__main__":
 	if not os.path.exists(path):
 		os.makedirs(path)
 		print("The new directory is created!")
+	else:
+		print("vgg16 folder already exists!")
 
 	df = pd.read_csv(f"./../data/folds_coffee_dataset.csv", sep = ",")
 
