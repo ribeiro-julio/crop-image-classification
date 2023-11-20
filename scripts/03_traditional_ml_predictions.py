@@ -1,5 +1,6 @@
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
+import os
 
 # handling data frames
 import pandas as pd
@@ -28,6 +29,11 @@ def get_predictions(dataset):
     # ---------------------------------------------------------
     # TODO: Running just if it was not executed before
     # ---------------------------------------------------------
+    if os.path.exists(f"./../results/performances_{dataset}"):
+        print("Results already exists. Skipping this dataset.")
+        return # nothing returned
+    else:
+        print("Running for the first time.")
 
     # ---------------------------------------------------------
     # Creating dataset using pandas
@@ -39,7 +45,8 @@ def get_predictions(dataset):
             df.at[i, "X"] = [int(x) for x in row["X"].strip("[]").split(",")]
         else:
             df.at[i, "X"] = [float(x) for x in row["X"].strip("[]").split(",")]
-    df = pd.concat([df.pop("X").apply(pd.Series), df["Y"]], axis = 1)
+    df2 = pd.concat([df.pop("X").apply(pd.Series), df["Y"]], axis = 1)
+    df_full = pd.concat([df[['im_path']], df2], axis = 1)
 
     # ---------------------------------------------------------
     # Defining all the ML classifier that we are going to test
@@ -69,8 +76,9 @@ def get_predictions(dataset):
         print("############################")
       
         # Performing a stratified holdout with 70/30, using i as the seed
-        x_train, x_test, y_train, y_test = train_test_split(df.drop("Y", axis = 1), df["Y"], 
-            test_size = 0.3, shuffle = True, stratify =  df["Y"], random_state=i)
+        x_train, x_test, y_train, y_test = train_test_split(df_full.drop("Y", axis = 1), 
+            df_full["Y"], test_size = 0.3, shuffle = True, stratify =  df_full["Y"], 
+            random_state=i)
       
         performances = []
         all_predictions = []
@@ -78,12 +86,20 @@ def get_predictions(dataset):
         # Training algorithms
         for model, model_instantiation in dict_classifiers.items():
             print(" - Training: ", model)
-            true_model = model_instantiation.fit(x_train, y_train)
-            preditctions = true_model.predict(x_test)
-            all_predictions.append(preditctions)
-            acc = accuracy_score(y_test, preditctions)
-            bac = balanced_accuracy_score(y_test, preditctions)
-            f1s = f1_score(y_test, preditctions)
+            true_model = model_instantiation.fit(
+                x_train.drop("im_path", axis = 1), y_train)
+            predictions = true_model.predict(x_test.drop("im_path", axis = 1))
+            preds = pd.DataFrame(predictions, index = x_test.index)
+
+            # creating a data frame with [img_path, seed, Y, prediction, algo]
+            df_predictions = pd.concat([x_test["im_path"], y_test, preds], axis = 1)
+            df_predictions['seed'] = i
+            df_predictions['algo'] = model
+
+            all_predictions.append(df_predictions)
+            acc = accuracy_score(y_test, predictions)
+            bac = balanced_accuracy_score(y_test, predictions)
+            f1s = f1_score(y_test, predictions)
             print("acc = ", acc)
             print("bac = ", bac)
             print("f1c = ", f1s)
@@ -91,19 +107,19 @@ def get_predictions(dataset):
             performances.append([acc, bac, f1s, i])
       
         # Binding results of the repetition (seed)
-
         df_perf = pd.DataFrame(performances, columns=["acc", "bac", "f1s", "seed"])
         df_perf['Algo'] =  dict_classifiers.keys()
         perf_reps.append(df_perf)
-        df_predictions = pd.DataFrame(all_predictions)
-        df_predictions['Seed'] =  i
-        df_predictions['Algo'] =  dict_classifiers.keys()
-        pred_reps.append(df_predictions)
+
+        # combining all the algorithm's df (with the predictions) - a seed data frame
+        complete_predictions = pd.concat(all_predictions, axis = 0)
+        pred_reps.append(complete_predictions)
     
     # ---------------------------------------------------------
     #Binding all predictions
     # ---------------------------------------------------------
 
+    # combine all seeds predictions
     pred_results = pd.concat(pred_reps, axis = 0)
     pred_results.to_csv(f"./../results/predictions_{dataset}", index = False)
 
@@ -116,17 +132,11 @@ def get_predictions(dataset):
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
 
-def main():
+if __name__ == "__main__":
     for dataset in ["dataset_1.csv", "dataset_2.csv", "dataset_3.csv"]:
         print(dataset.replace(".csv", ""))
         get_predictions(dataset)
         print("-------------------------------------------")
-
-# --------------------------------------------------------------------------------------------------------------------
-# --------------------------------------------------------------------------------------------------------------------
-
-if __name__ == "__main__":
-    main()
 
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
