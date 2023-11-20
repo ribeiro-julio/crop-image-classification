@@ -34,18 +34,13 @@ def get_VGG16_model_Keras(input_shape=(64,64,3)) :
 	VGGmodel = Sequential() 
 	baseModel = VGG16(
 		input_shape=input_shape,
-		weights= None,
+		weights= 'imagenet',
 		include_top=False,
 	)
 	baseModel.trainable = False
 	VGGmodel.add(baseModel)
 	VGGmodel.add(Flatten()) 
 	VGGmodel.add(Dense(4096,activation = 'relu'))
-	VGGmodel.add(BatchNormalization())
-	VGGmodel.add(Dropout(0.2, input_shape=(4096,)))
-	VGGmodel.add(Dense(2048,activation = 'relu'))
-	VGGmodel.add(BatchNormalization())
-	VGGmodel.add(Dropout(0.2, input_shape=(2048,)))
 	VGGmodel.add(Dense(1,activation = 'sigmoid'))
 
 	return(VGGmodel)
