@@ -2,15 +2,12 @@
 # --------------------------------------------------------------------------------------------------------------------
 
 import os 
-
-# handling data frames
 import pandas as pd
-
 import numpy as np
+import keras
 
 from PIL import Image
 
-import keras
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPool2D , Flatten, BatchNormalization, Dropout
 from tensorflow.keras.losses import BinaryCrossentropy
@@ -34,7 +31,7 @@ def get_VGG16_model_Keras(input_shape=(64,64,3)) :
 	VGGmodel = Sequential() 
 	baseModel = VGG16(
 		input_shape=input_shape,
-		weights= 'imagenet',
+		weights='imagenet',
 		include_top=False,
 	)
 	baseModel.trainable = False
@@ -169,7 +166,7 @@ def trainVGG16(df):
 
 if __name__ == "__main__":
 
-	path = "./../results/vgg16/"
+	path = "./../results/vgg16Logs/"
 	if not os.path.exists(path):
 		os.makedirs(path)
 		print("The new directory is created!")

@@ -1,14 +1,9 @@
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
 import os
-
-# handling data frames
 import pandas as pd
 
-# training and testing splits
 from sklearn.model_selection import train_test_split
-
-# ML algorithms
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -17,8 +12,6 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
-
-# evaluation metrics
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -112,7 +105,7 @@ def get_predictions(dataset):
 
         # combining all the algorithm's df (with the predictions) - a seed data frame
         complete_predictions = pd.concat(all_predictions, axis = 0)
-        complete_predictions['seed'] = i
+        complete_predictions['Seed'] = i
         pred_reps.append(complete_predictions)
     
     # ---------------------------------------------------------

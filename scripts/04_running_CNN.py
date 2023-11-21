@@ -2,10 +2,7 @@
 # --------------------------------------------------------------------------------------------------------------------
 
 import os 
-
-# handling data frames
 import pandas as pd
-
 import numpy as np
 
 from PIL import Image
@@ -20,8 +17,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
 
-def get_CNN_model(input_shape=(64,64,3)) :
-
+def get_CNN_model(input_shape=(64,64,3)):
 	CNNmodel = models.Sequential()
 	CNNmodel.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
 	CNNmodel.add(layers.MaxPooling2D((2, 2)))
@@ -34,9 +30,7 @@ def get_CNN_model(input_shape=(64,64,3)) :
 	CNNmodel.add(layers.Dense(64, activation='relu'))
 	CNNmodel.add(layers.Dropout(0.5))
 	CNNmodel.add(layers.Dense(1, activation="sigmoid"))
-
 	return(CNNmodel)
-
 
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
@@ -129,7 +123,13 @@ def trainCNNs(df):
 	    predictions = model.predict(test_images)
 	    rounded_predictions = np.round(predictions)
 
+	    # adding predictions to a data frame
+	    preds   = pd.DataFrame(rounded_predictions, index = df_testing.index)
+	    preds   = preds.rename(columns={0: 'predictions'})
+	    df_pred = pd.concat([df_testing, preds], axis = 1)
+	  
 	    # evaluating with scikit learn metrics
+
 	    acc = accuracy_score(test_labels, rounded_predictions)
 	    bac = balanced_accuracy_score(test_labels, rounded_predictions)
 	    f1s = f1_score(test_labels, rounded_predictions)
@@ -137,13 +137,16 @@ def trainCNNs(df):
 	    print("bac = ", bac)
 	    print("f1c = ", f1s)
 	    print("----------------------------")
+
 	    all_performances.append([acc, bac, f1s, seed])
-	    all_predictions.append(pd.DataFrame(rounded_predictions))
+	    all_predictions.append(pd.DataFrame(df_pred))
 
 	# ---------------------------------------------------------
 	#Binding all predictions and performances
 	# ---------------------------------------------------------
-	pred_results = pd.concat(all_predictions, axis = 1)
+	pred_results = pd.concat(all_predictions, axis = 0) # = column
+	pred_results[['algo']] = "CNN"
+
 	perf_results = pd.DataFrame(all_performances, columns=["acc", "bac", "f1s", "seed"])
 	return (pred_results, perf_results)
 
