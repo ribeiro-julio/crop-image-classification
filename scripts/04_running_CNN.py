@@ -40,7 +40,7 @@ def trainCNNs(df):
 	all_performances = []
 	all_predictions  = []
 
-	for seed in range(0, 30):
+	for seed in range(0, 2):
 
 	    print("############################")
 	    print(" * Running for seed = ", seed)
@@ -123,13 +123,16 @@ def trainCNNs(df):
 	    predictions = model.predict(test_images)
 	    rounded_predictions = np.round(predictions)
 
+	    # ----------------------------
 	    # adding predictions to a data frame
+	    # ----------------------------
 	    preds   = pd.DataFrame(rounded_predictions, index = df_testing.index)
 	    preds   = preds.rename(columns={0: 'predictions'})
-	    df_pred = pd.concat([df_testing, preds], axis = 1)
+	    df_pred = pd.concat([df_testing, preds], axis = 1) # by column
 	  
+	    # ----------------------------
 	    # evaluating with scikit learn metrics
-
+	    # ----------------------------
 	    acc = accuracy_score(test_labels, rounded_predictions)
 	    bac = balanced_accuracy_score(test_labels, rounded_predictions)
 	    f1s = f1_score(test_labels, rounded_predictions)
@@ -139,12 +142,12 @@ def trainCNNs(df):
 	    print("----------------------------")
 
 	    all_performances.append([acc, bac, f1s, seed])
-	    all_predictions.append(pd.DataFrame(df_pred))
+	    all_predictions.append(df_pred)
 
 	# ---------------------------------------------------------
-	#Binding all predictions and performances
+	# Binding all predictions and performances
 	# ---------------------------------------------------------
-	pred_results = pd.concat(all_predictions, axis = 0) # = column
+	pred_results = pd.concat(all_predictions, axis = 0) # = row
 	pred_results[['algo']] = "CNN"
 
 	perf_results = pd.DataFrame(all_performances, columns=["acc", "bac", "f1s", "seed"])
@@ -166,7 +169,7 @@ if __name__ == "__main__":
 
 	(pred_results, perf_results) = trainCNNs(df=df)
 	perf_results.to_csv("./../results/performances_cnn.csv", index = False)
-	pred_results.to_csv("./../results/predictions_cnn.csv", index = False)
+	pred_results.to_csv("./../results/predictions_cnn.csv",  index = False)
 	print("Done!")
 
 # --------------------------------------------------------------------------------------------------------------------
