@@ -53,7 +53,7 @@ def get_predictions(dataset):
     # ---------------------------------------------------------
 
     dict_classifiers = {
-        "KNN": KNeighborsClassifier(),
+        "KNN": make_pipeline(StandardScaler(), KNeighborsClassifier()),
         "NB": GaussianNB(),
         "DT": DecisionTreeClassifier(),
         "RF": RandomForestClassifier(),
@@ -70,7 +70,8 @@ def get_predictions(dataset):
     pred_reps = []
 
     # TODO: paralellize into different threads
-    for i in range(0, 30):
+    # for i in range(0, 30):
+    for i in range(0,2): #for debug    
         print("############################")
         print(" * Running for seed = ", i)
         print("############################")
@@ -86,14 +87,13 @@ def get_predictions(dataset):
         # Training algorithms
         for model, model_instantiation in dict_classifiers.items():
             print(" - Training: ", model)
-            true_model = model_instantiation.fit(
-                x_train.drop("im_path", axis = 1), y_train)
+            true_model = model_instantiation.fit(x_train.drop("im_path", axis = 1), y_train)
             predictions = true_model.predict(x_test.drop("im_path", axis = 1))
             preds = pd.DataFrame(predictions, index = x_test.index)
+            preds = preds.rename(columns={0: 'predictions'})
 
             # creating a data frame with [img_path, seed, Y, prediction, algo]
             df_predictions = pd.concat([x_test["im_path"], y_test, preds], axis = 1)
-            df_predictions['seed'] = i
             df_predictions['algo'] = model
 
             all_predictions.append(df_predictions)
@@ -113,6 +113,7 @@ def get_predictions(dataset):
 
         # combining all the algorithm's df (with the predictions) - a seed data frame
         complete_predictions = pd.concat(all_predictions, axis = 0)
+        complete_predictions['seed'] = i
         pred_reps.append(complete_predictions)
     
     # ---------------------------------------------------------
@@ -133,7 +134,8 @@ def get_predictions(dataset):
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    for dataset in ["dataset_1.csv", "dataset_2.csv", "dataset_3.csv"]:
+    #for dataset in ["dataset_1.csv", "dataset_2.csv", "dataset_3.csv"]:
+    for dataset in ["dataset_3.csv"]:
         print(dataset.replace(".csv", ""))
         get_predictions(dataset)
         print("-------------------------------------------")
