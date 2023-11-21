@@ -27,7 +27,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 def get_predictions(dataset):
     
     # ---------------------------------------------------------
-    # TODO: Running just if it was not executed before
+    # Running just if it was not executed before
     # ---------------------------------------------------------
     if os.path.exists(f"./../results/performances_{dataset}"):
         print("Results already exists. Skipping this dataset.")
@@ -70,8 +70,7 @@ def get_predictions(dataset):
     pred_reps = []
 
     # TODO: paralellize into different threads
-    # for i in range(0, 30):
-    for i in range(0,2): #for debug    
+    for i in range(0, 30):
         print("############################")
         print(" * Running for seed = ", i)
         print("############################")
@@ -134,8 +133,7 @@ def get_predictions(dataset):
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    #for dataset in ["dataset_1.csv", "dataset_2.csv", "dataset_3.csv"]:
-    for dataset in ["dataset_3.csv"]:
+    for dataset in ["dataset_1.csv", "dataset_2.csv", "dataset_3.csv"]:
         print(dataset.replace(".csv", ""))
         get_predictions(dataset)
         print("-------------------------------------------")
