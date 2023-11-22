@@ -2,15 +2,12 @@
 # --------------------------------------------------------------------------------------------------------------------
 
 import os 
-
-# handling data frames
 import pandas as pd
-
 import numpy as np
+import keras
 
 from PIL import Image
 
-import keras
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPool2D , Flatten, BatchNormalization, Dropout
 from tensorflow.keras.losses import BinaryCrossentropy
@@ -34,7 +31,7 @@ def get_VGG16_model_Keras(input_shape=(64,64,3)) :
 	VGGmodel = Sequential() 
 	baseModel = VGG16(
 		input_shape=input_shape,
-		weights= 'imagenet',
+		weights='imagenet',
 		include_top=False,
 	)
 	baseModel.trainable = False
@@ -102,7 +99,7 @@ def trainVGG16(df):
 	all_performances = []
 	all_predictions  = []
 
-	for seed in range(0, 30):
+	for seed in range(0, 30):#2):
 
 	    print("############################")
 	    print(" * Running for seed = ", seed)
@@ -122,8 +119,6 @@ def trainVGG16(df):
 
 	    print(" - defining VGG16 model")
 	    model = get_VGG16_model_Keras(input_shape=(64,64,3))
-	    
-	    model.summary()
 	    model.compile(optimizer='adam', loss=BinaryCrossentropy(), metrics=['binary_accuracy', 'accuracy'])
 
 	    # ----------------------------
@@ -141,12 +136,20 @@ def trainVGG16(df):
 	    # ----------------------------
 	    # Evaluating predictions
 	    # ----------------------------
-	   
 	    print(" - Evaluating VGG16")
 	    predictions = model.predict(test_images)
 	    rounded_predictions = np.round(predictions)
 
+		# ----------------------------
+	    # adding predictions to a data frame
+	    # ----------------------------
+	    preds   = pd.DataFrame(rounded_predictions, index = df_testing.index)
+	    preds   = preds.rename(columns={0: 'predictions'})
+	    df_pred = pd.concat([df_testing, preds], axis = 1) # by column
+
+	    # ----------------------------
 	    # evaluating with scikit learn metrics
+	    # ----------------------------
 	    acc = accuracy_score(test_labels, rounded_predictions)
 	    bac = balanced_accuracy_score(test_labels, rounded_predictions)
 	    f1s = f1_score(test_labels, rounded_predictions)
@@ -155,12 +158,14 @@ def trainVGG16(df):
 	    print("f1c = ", f1s)
 	    print("----------------------------")
 	    all_performances.append([acc, bac, f1s, seed])
-	    all_predictions.append(pd.DataFrame(rounded_predictions))
+	    all_predictions.append(df_pred)
 
 	# ---------------------------------------------------------
-	#Binding all predictions and performances
+	# Binding all predictions and performances
 	# ---------------------------------------------------------
-	pred_results = pd.concat(all_predictions, axis = 1)
+	pred_results = pd.concat(all_predictions, axis = 0) # by row
+	pred_results[['algo']] = "VGG16"
+
 	perf_results = pd.DataFrame(all_performances, columns=["acc", "bac", "f1s", "seed"])
 	return (pred_results, perf_results)
 
@@ -169,7 +174,7 @@ def trainVGG16(df):
 
 if __name__ == "__main__":
 
-	path = "./../results/vgg16/"
+	path = "./../results/vgg16Logs/"
 	if not os.path.exists(path):
 		os.makedirs(path)
 		print("The new directory is created!")
@@ -181,7 +186,7 @@ if __name__ == "__main__":
 	(pred_results, perf_results) = trainVGG16(df=df)
 	
 	perf_results.to_csv("./../results/performances_vgg16.csv", index = False)
-	pred_results.to_csv("./../results/predictions_vgg16.csv", index = False)
+	pred_results.to_csv("./../results/predictions_vgg16.csv",  index = False)
 	print("Done!")
 
 # --------------------------------------------------------------------------------------------------------------------
