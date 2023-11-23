@@ -355,12 +355,18 @@ sel.ids  = which(all.preds$image %in% hard.ids)
 
 hard.images = all.preds[sel.ids, ]
 hard.images = hard.images[order(hard.images$Y),]
+write.csv(hard.images, file = "../data/hardImages_dataset2.csv")
 
-table(hard.images$Y)
- # 0  1 
-# 18 29
 
-write.csv(hard.images, file = "../data/hardImages_dataset1.csv")
+hard.images$Y = as.factor(hard.images$Y)
+g9 = ggplot(hard.images, aes(x = Y, colour = Y, fill = Y)) 
+g9 = g9 + geom_bar() + theme_bw()
+g9 = g9 + scale_fill_manual(values = c("lightgrey", "black"))
+g9 = g9 + scale_colour_manual(values = c("lightgrey", "black"))
+g9 = g9 + labs(x = "Class") + guides(fill = "none", colour = "none")
+g9 = g9 + geom_text(stat='count', aes(label=..count..), vjust= 2, 
+	colour = c("black", "white"))
+ggsave(g9, file = "plots/hardImages_barplot.pdf", width = 2.96, height = 2.53)
 
 # ---------------------------------------------
 # Problematic images
