@@ -89,7 +89,7 @@ def readImagesFromDF(df, seed):
     # ----------------------------
     train_labels = np.array(df_training["Y"])
     test_labels  = np.array(df_testing["Y"])
-    return train_images, train_labels, test_images, test_labels 
+    return train_images, train_labels, test_images, test_labels, df_training, df_testing 
 
 # --------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ def trainVGG16(df):
 	    # 3) `python` random seed
 	    # ----------------------------
 	    keras.utils.set_random_seed(seed)
-	    train_images, train_labels, test_images, test_labels = readImagesFromDF(df=df, seed=seed)
+	    train_images, train_labels, test_images, test_labels, df_training, df_testing = readImagesFromDF(df=df, seed=seed)
 
 	    # ----------------------------
 	    # Defining the prediction model (CNN)
