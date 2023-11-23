@@ -392,25 +392,55 @@ ggsave(hist, file = "plots/hardImagesPixelDistribution.pdf", width = 6.76, heigh
 
 cat(" - Computing overall performance values \n")
 
-avg1 = apply(data1[,-1], 2, mean)
-sd1  = apply(data1[,-1], 2, sd)
-med1 = apply(data1[,-1], 2, median)
+algos = unique(df1$Algo)
+aux.algos = lapply(algos, function(alg) {
+	sub = dplyr::filter(df1, Algo == alg & variable == "bac")
+	algo.mean = mean(sub$value) 
+	algo.sd   = sd(sub$value)
+	ret = c(algo.mean, algo.sd)	
+	return(ret)
+})
+df1.perf = data.frame(do.call("rbind", aux.algos))
+df1.perf$dataset = "dataset1"
+df1.perf$algo = algos
 
-avg2 = apply(data2[,-1], 2, mean)
-sd2  = apply(data2[,-1], 2, sd)
-med2 = apply(data2[,-1], 2, median)
+aux.algos = lapply(algos, function(alg) {
+	sub = dplyr::filter(df2, Algo == alg & variable == "bac")
+	algo.mean = mean(sub$value) 
+	algo.sd   = sd(sub$value)
+	ret = c(algo.mean, algo.sd)	
+	return(ret)
+})
+df2.perf = data.frame(do.call("rbind", aux.algos))
+df2.perf$dataset = "dataset2"
+df2.perf$algo = algos
 
-avg3 = apply(data3[,-1], 2, mean)
-sd3  = apply(data3[,-1], 2, sd)
-med3 = apply(data3[,-1], 2, median)
+aux.algos = lapply(algos, function(alg) {
+	sub = dplyr::filter(df3, Algo == alg & variable == "bac")
+	algo.mean = mean(sub$value) 
+	algo.sd   = sd(sub$value)
+	ret = c(algo.mean, algo.sd)	
+	return(ret)
+})
+df3.perf = data.frame(do.call("rbind", aux.algos))
+df3.perf$dataset = "dataset3"
+df3.perf$algo = algos
 
-obj = list(avg1, sd1, med1, avg2, sd2, med2, avg3, sd3, med3)
+
+ret.cnn = data.frame(t(c(mean(cnn.data$bac), sd(cnn.data$bac))))
+ret.cnn$dataset = "raw image"
+ret.cnn$algo = "CNN"
+
+ret.vgg = data.frame(t(c(mean(vgg.data$bac), sd(vgg.data$bac))))
+ret.vgg$dataset = "raw image"
+ret.vgg$algo = "VGG16"
+
+obj = list(df1.perf, df2.perf, df3.perf, ret.cnn, ret.vgg)
 df.perf = data.frame(do.call("rbind", obj))
-df.perf$perf = rep(c("mean", "sd", "media"), time = 3)
-df.perf$dataset = rep(c("dataset1", "dataset2", "dataset3"),each = 3)
+colnames(df.perf)[1:2] = c("mean", "sd")
+
 print(df.perf)
 write.csv(df.perf, file = "../data/overallPerformances.csv")
-
 
 # ---------------------------------------------
 # ---------------------------------------------
