@@ -349,7 +349,6 @@ aux = lapply(1:nrow(all.preds), function(i) {
 	return (tmp)
 })
 
-
 hard.ids = unlist(aux)
 sel.ids  = which(all.preds$image %in% hard.ids)
 
@@ -369,48 +368,23 @@ g9 = g9 + geom_text(stat='count', aes(label=..count..), vjust= 2,
 ggsave(g9, file = "plots/hardImages_barplot.pdf", width = 2.96, height = 2.53)
 
 # ---------------------------------------------
-# Problematic images
+# Problematic images histograms
 # ---------------------------------------------
+
+hard.images.noncoffe = hard.images[which(hard.images$Y == 0),]
+hard.images.coffee   = hard.images[which(hard.images$Y == 1),]
 
 # https://cran.r-project.org/web/packages/imager/vignettes/gettingstarted.html#example-1-histogram-equalisation
 
-coffee.images = list.files(path = "../dataset-brazilian_coffee_scenes/hardImages/coffee/", full.names=TRUE)
-aux.img = lapply(coffee.images, function(image.name) {
-	print(image.name)
-	image = imager::load.image(image.name)
-	bdf = as.data.frame(image)
-	bdf = dplyr::mutate(bdf,channel=factor(cc,labels=c('R','G','NI')))
-	bdf$image.name = image.name 
-	bdf$target = "coffee"
-	return(bdf)
-})
-df.coffee = do.call("rbind", aux.img)
-
-
-non.coffee.images = list.files(path = "../dataset-brazilian_coffee_scenes/hardImages/noncoffee/", full.names=TRUE)
-aux.img = lapply(non.coffee.images, function(image.name) {
-	print(image.name)
-	image = imager::load.image(image.name)
-	bdf = as.data.frame(image)
-	bdf = dplyr::mutate(bdf,channel=factor(cc,labels=c('R','G','NI')))
-	bdf$image.name = image.name 
-	bdf$target = "noncoffee"
-	return(bdf)
-})
-df.non.coffee = do.call("rbind", aux.img)
-
-
-# ---------------------
-# histogram
-# ---------------------
+df.non.coffee = loadPixelData(images = hard.images.noncoffe, target = "noncoffee")
+df.coffee     = loadPixelData(images = hard.images.coffe, target = "coffee")
 
 df.hist = rbind(df.coffee, df.non.coffee)
-
-hist = ggplot(df.hist, aes(value,col=channel, fill=channel))
+hist = ggplot(df.hist, aes(value,col=channel, fill=channel, alpha = 0.5))
 hist = hist + geom_histogram(bins=30) + facet_grid(target ~ channel, scales = "free")
-hist = hist + labs(x = "", y = "Count") + theme_bw()
-#hist
-ggsave(hist, file = "hardImagesPixelDistribution.pdf", width = 6.76, height = 3.18)
+hist = hist + labs(x = "", y = "Count") + theme_bw() + guides(alpha = "none")
+# hist
+ggsave(hist, file = "plots/hardImagesPixelDistribution.pdf", width = 6.76, height = 3.18)
 
 # ---------------------------------------------
 # Overall performance

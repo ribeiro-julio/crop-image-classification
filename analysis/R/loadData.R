@@ -44,3 +44,20 @@ loadDLLerningCurves = function(datapath, algoname) {
 # ---------------------------------------------
 # ---------------------------------------------
 
+loadPixelData = function(images, target) {
+	aux = lapply(1:nrow(images), function(i) {
+		image.name = images[i, "image"]
+		print(image.name)
+		image = imager::load.image(image.name)
+		bdf = as.data.frame(image)
+		bdf = dplyr::mutate(bdf,channel=factor(cc,labels=c('R','G','NI')))
+		bdf$image.name = image.name 
+		bdf$target = target
+		return(bdf)
+	})
+	df = do.call("rbind", aux)
+	return(df)
+}
+
+# ---------------------------------------------
+# ---------------------------------------------
