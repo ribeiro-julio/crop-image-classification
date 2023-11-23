@@ -226,9 +226,38 @@ cnn.learningCurves = loadDLLerningCurves(datapath = "../results/cnnLogs/",
 vgg.learningCurves = loadDLLerningCurves(datapath = "../results/vgg16Logs/",
 	algoname = "VGG16")
 
+cnn.epochs = data.frame(unlist(lapply(cnn.learningCurves, nrow)))
+colnames(cnn.epochs) = c("epoch")
+cnn.epochs$algo = "CNN"
+
+vgg.epochs = data.frame(unlist(lapply(vgg.learningCurves, nrow)))
+colnames(vgg.epochs) = c("epoch")
+vgg.epochs$algo = "VGG"
+
+df.epochs = rbind(cnn.epochs, vgg.epochs)
+
+g3 = ggplot(df.epochs, aes(x = epoch, colour = algo, fill = algo)) 
+g3 = g3 + geom_histogram(stat="count", alpha = 0.5) + theme_bw()
+g3 = g3 + labs(x = "Number of epochs\n in the training step", y = "Count")
+g3 = g3 + labs(fill = "Algorithm", colour = "Algorithm")
+# g3 
+ggsave(g3, file = "plots/dl_epochs.pdf", width = 4.46, height = 3.36)
+
+# ---------------------------------------------
+# ---------------------------------------------
+
+# teste
+# df.lc.cnn = do.call("rbind", cnn.learningCurves)
+# df.lc.vgg = do.call("rbind", vgg.learningCurves)
+# df.lc = rbind(df.lc.cnn, df.lc.vgg)
+
+# g4 = ggplot(cnn.learningCurves[[2]], mapping = aes(x = epoch, y = accuracy, 
+	# group = seed))
+# g4 = g4 + geom_line() + theme_bw()
+# g4
+
 
 # curvas podem ter qtde diferente de epocas (CNN, VGG)
-
 # media
 # desvio padrao
 
