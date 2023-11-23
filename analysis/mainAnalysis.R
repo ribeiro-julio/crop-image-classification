@@ -220,6 +220,8 @@ if(obj7$p.value < 0.05) {
 # Deep Learning - Learning curves
 # ---------------------------------------------
 
+cat(" - Plotting DL learning curves \n")
+
 cnn.learningCurves = loadDLLerningCurves(datapath = "../results/cnnLogs/",
 	algoname = "CNN")
 
@@ -279,75 +281,57 @@ ggsave(g7, file = "plots/dl_loss_curves_allmeasuers_wrap.pdf", width = 5.61, hei
 # Predictions Plots (RF, VGG, CNN, SVM)
 # ---------------------------------------------
 
-# TODO: Need real Y, to compare with the predictions
-# TODO: Keep the image ID when doing the prediction 
-
 cat(" - Loading predictions obtained in dataset 2\n")
 
-# true labels
-labels = read.csv("../data/folds_coffee_dataset.csv")
-test.labels = dplyr::filter(labels, Fold == "Test")
-
-
 pred2 = read.csv("../results/predictions_dataset_2.csv")
-pred2$dataset = "dataset2"
-rf.preds = dplyr::filter(pred2, Algo == "RF")
-rf.preds$Algo    = NULL 
-rf.preds$dataset = NULL
+rf.preds  = dplyr::filter(pred2, algo == "RF")
+svm.preds = dplyr::filter(pred2, algo == "SVM")
+
+cnn.preds = read.csv("../results/predictions_cnn.csv")
+cnn.preds$Fold = NULL
+vgg.preds = read.csv("../results/predictions_vgg16.csv")
+vgg.preds$Fold = NULL
 
 
-# filtering RF predictions by algorithhm
-ALGOS = c("SVM", "RF", "MLP", "DT", "KNN", "NB")
+# ---------------------
+# Aggregating the predictions
+# ---------------------
+cat(" - Loading and aggregating RF predictions\n")
+rf.agg.preds = aggregateMLPredictions(preds = rf.preds)
 
+cat(" - Loading and aggregating SVM predictions\n")
+svm.agg.preds = aggregateMLPredictions(preds = svm.preds)
 
-aux.algos = lapply(ALGOS, function(alg) {
-	pred.algo = dplyr::filter(pred2, Algo == alg)
-	pred.algo$Seed    = NULL 
-	pred.algo$Algo    = NULL 
-	pred.algo$dataset = NULL
+cat(" - Loading and aggregating CNN predictions\n")
+cnn.agg.preds = aggregateDLPredictions(preds = cnn.preds)
 
-	preds = apply(pred.algo, 2, DescTools::Mode)
-	preds = unlist(lapply(preds, function(pd) return (pd[1])))
-	return(preds)
-})
+cat(" -Loading and aggregating VGG predictions\n")
+vgg.agg.preds = aggregateDLPredictions(preds = vgg.preds)
 
+# ---------------------------------------------
+# ---------------------------------------------
 
-# -----------------------
-# Joining Traditional ML and CNN predictions
-# -----------------------
+all.preds = cbind(rf.agg.preds, svm.agg.preds$predictions, 
+	cnn.agg.preds$predictions, vgg.agg.preds$predictions)
+all.preds$algo = NULL
+colnames(all.preds) = c("image", "Y", "RF", "SVM", "CNN", "VGG16")
 
-all.preds = cbind(agg.preds, cnn.agg.preds)
-colnames(all.preds)[ncol(all.preds)] = "CNN"
-all.preds$id = 1:nrow(all.preds)
-rownames(all.preds) = NULL
+all.preds.melted = melt(all.preds, id.vars = c(1))
+all.preds.melted$value = as.factor(all.preds.melted$value)
 
-# -----------------------
-# -----------------------
-
-
-
-# dataset3 = read.csv("../data/dataset_3.csv", sep = ";")
-# Y = dataset3$Y
-
-pred.full = melt(all.preds, id.vars = c(8))
-pred.full$value = as.factor(pred.full$value)
-
-# zero.ids = which(pred.full$value == 0)
-# tmp = rbind(pred.full[zero.ids, ], pred.full[-zero.ids, ])
-# tmp$df_index = factor(tmp$df_index, levels = unique(tmp$df_index))
-
-# TODO: Add True labels
 # TODO: order x axis according to the different labels
+zero.ids = which(all.preds.melted$value == 0)
+tmp = rbind(all.preds.melted[zero.ids, ], all.preds.melted[-zero.ids, ])
+tmp$image = factor(tmp$image, levels = unique(tmp$image))
 
-g3 = ggplot(pred.full, aes(x = id, y = variable, fill = value, colour = value))
-g3 = g3 + geom_tile() + theme_bw()
-g3 = g3 + scale_fill_manual(values = c("lightgrey", "black"))
-g3 = g3 + scale_colour_manual(values = c("lightgrey", "black"))
-g3 = g3 + theme(axis.text.x = element_blank(), axis.ticks = element_blank())
-g3 = g3 + labs(x = "Image index", y = "Algorithm", fill = "Class", colour = "Class")
-g3 
-
-ggsave(g3, filename = "predictionsPlot_dataset2.pdf", width = 7.55, height = 2.44)
+g8 = ggplot(tmp, aes(x = image, y = variable, 
+	fill = value, colour = value))
+g8 = g8 + geom_tile() + theme_bw()
+g8 = g8 + scale_fill_manual(values = c("lightgrey", "black"))
+g8 = g8 + scale_colour_manual(values = c("lightgrey", "black"))
+g8 = g8 + theme(axis.text.x = element_blank(), axis.ticks = element_blank())
+g8 = g8 + labs(x = "Image index", y = "Algorithm", fill = "Class", colour = "Class")
+ggsave(g8, filename = "plots/predictions.pdf", width = 7.55, height = 2.44)
 
 
 # ---------------------------------------------

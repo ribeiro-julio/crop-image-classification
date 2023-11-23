@@ -41,8 +41,6 @@ loadDLLerningCurves = function(datapath, algoname) {
 	return(aux)
 }
 
-
-
 # ---------------------------------------------
 # ---------------------------------------------
 
