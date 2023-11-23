@@ -1,7 +1,6 @@
 # ---------------------------------------------
 # ---------------------------------------------
 
-
 loadData = function(datapath, dataname) {
 	
 	data = read.csv(datapath)
@@ -28,3 +27,22 @@ loadDLData = function(datapath, algoname) {
 
 # ---------------------------------------------
 # ---------------------------------------------
+
+loadDLLerningCurves = function(datapath, algoname) {
+	
+	dl.files = list.files(path = datapath, full.names = TRUE)
+	aux = lapply(1:30, function (i){
+		dl.data = read.csv(dl.files[i])
+		sub.data = dl.data[,c(1,2,5,4)]
+		sub.data$seed = i-1
+		sub.data$algo = algoname
+		return(sub.data)
+	})
+	return(aux)
+}
+
+
+
+# ---------------------------------------------
+# ---------------------------------------------
+

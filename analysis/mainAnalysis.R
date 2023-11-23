@@ -217,6 +217,22 @@ if(obj7$p.value < 0.05) {
 #  - but VGG is statistically better than RF and SVM
 
 # ---------------------------------------------
+# Deep Learning - Learning curves
+# ---------------------------------------------
+
+cnn.learningCurves = loadDLLerningCurves(datapath = "../results/cnnLogs/",
+	algoname = "CNN")
+
+vgg.learningCurves = loadDLLerningCurves(datapath = "../results/vgg16Logs/",
+	algoname = "VGG16")
+
+
+# curvas podem ter qtde diferente de epocas (CNN, VGG)
+
+# media
+# desvio padrao
+
+# ---------------------------------------------
 # Predictions Plots (RF, VGG, CNN, SVM)
 # ---------------------------------------------
 
