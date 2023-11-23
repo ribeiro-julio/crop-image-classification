@@ -319,7 +319,7 @@ colnames(all.preds) = c("image", "Y", "RF", "SVM", "CNN", "VGG16")
 all.preds.melted = melt(all.preds, id.vars = c(1))
 all.preds.melted$value = as.factor(all.preds.melted$value)
 
-# TODO: order x axis according to the different labels
+# Ordering x axis (images) according to their labels
 zero.ids = which(all.preds.melted$value == 0)
 tmp = rbind(all.preds.melted[zero.ids, ], all.preds.melted[-zero.ids, ])
 tmp$image = factor(tmp$image, levels = unique(tmp$image))
@@ -335,24 +335,25 @@ ggsave(g8, filename = "plots/predictions.pdf", width = 7.55, height = 2.44)
 
 
 # ---------------------------------------------
-# Hard examples
+# Identifying Hard examples
 # ---------------------------------------------
 
 cat(" - Identifying missclassified examples (dataset1) \n")
 
-aux = lapply(1:nrow(pred2), function(i) {
-	example = pred2[i,]
+aux = lapply(1:nrow(all.preds), function(i) {
+	example = all.preds[i,]
 	tmp = NULL
-	if(all(example[3:7] != example$Y)) {
-		tmp = example$df_index
+	if(all(example[3:6] != example$Y)) {
+		tmp = example$image
 	} 
 	return (tmp)
 })
 
-hard.ids = unlist(aux)
-sel.ids  = which(pred2$df_index %in% hard.ids)
 
-hard.images = pred2[sel.ids, ]
+hard.ids = unlist(aux)
+sel.ids  = which(all.preds$image %in% hard.ids)
+
+hard.images = all.preds[sel.ids, ]
 hard.images = hard.images[order(hard.images$Y),]
 
 table(hard.images$Y)
