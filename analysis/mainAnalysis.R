@@ -22,7 +22,6 @@ for(file in R.files) {
 # ---------------------------------------------
 
 cat(" - Reading results' data\n")
-
 df1 = loadData(datapath = "../results/performances_dataset_1.csv",
 	dataname = "dataset1")
 df2 = loadData(datapath = "../results/performances_dataset_2.csv",
@@ -37,8 +36,7 @@ colnames(df.full) = c("ids", "rep", "algo", "measure", "value", "dataset")
 # Boxplot
 # ---------------------------------------------
 
-cat(" - Plot: boxplot + violin plot\n")
-
+cat(" - Plot: Traditional ML boxplot + violin plot\n")
 # filter results by bac
 df.bac = dplyr::filter(df.full, measure == "bac")
 
@@ -129,6 +127,7 @@ if(rf1$p.value < 0.05) {
 # Best algorithms in dataset2 x CNNs x VGG16
 # ---------------------------------------------
 
+cat(" - Reading DL data\n")
 cnn.data = loadDLData(datapath = "../results/performances_cnn.csv", 
 	algoname = "CNN")
 
@@ -150,6 +149,7 @@ colnames(svm.dataset2) = colnames(cnn.dataset2)
 
 df2 = rbind(cnn.dataset2, vgg.dataset2, rf.dataset2, svm.dataset2)
 
+cat(" - Plot: boxplot ML vs DL \n")
 g2 = ggplot(df2, aes(x = reorder(algo, -bac), y = bac, group = algo, fill = algo))
 g2 = g2 + geom_violin() + geom_boxplot(width = .15, fill = "white")
 g2 = g2 + theme_bw() + guides(fill = "none")
@@ -188,7 +188,7 @@ if(obj5$p.value < 0.05) {
 obj6 = suppressWarnings(wilcox.test(
 	x = rf.dataset2$bac, y = vgg.data$bac, conf.level = 0.95))
 cat("P-value: ", obj6$p.value, "\n")
-cat("@ SVM - Dataset2 vs VGG: ")
+cat("@ RF - Dataset2 vs VGG: ")
 if(obj6$p.value < 0.05) {
 	cat("There is statistical difference between the methods!\n")
 } else {
@@ -324,6 +324,9 @@ zero.ids = which(all.preds.melted$value == 0)
 tmp = rbind(all.preds.melted[zero.ids, ], all.preds.melted[-zero.ids, ])
 tmp$image = factor(tmp$image, levels = unique(tmp$image))
 
+
+cat(" - Plot: predictions \n")
+
 g8 = ggplot(tmp, aes(x = image, y = variable, 
 	fill = value, colour = value))
 g8 = g8 + geom_tile() + theme_bw()
@@ -338,7 +341,7 @@ ggsave(g8, filename = "plots/predictions.pdf", width = 7.55, height = 2.44)
 # Identifying Hard examples
 # ---------------------------------------------
 
-cat(" - Identifying missclassified examples (dataset1) \n")
+cat(" - Identifying missclassified examples (dataset 2) \n")
 
 aux = lapply(1:nrow(all.preds), function(i) {
 	example = all.preds[i,]
@@ -356,6 +359,7 @@ hard.images = all.preds[sel.ids, ]
 hard.images = hard.images[order(hard.images$Y),]
 write.csv(hard.images, file = "../data/hardImages_dataset2.csv")
 
+cat(" - Plot: number of missclassified examples per class \n")
 
 hard.images$Y = as.factor(hard.images$Y)
 g9 = ggplot(hard.images, aes(x = Y, colour = Y, fill = Y)) 
@@ -378,6 +382,8 @@ hard.images.coffee   = hard.images[which(hard.images$Y == 1),]
 
 df.non.coffee = loadPixelData(images = hard.images.noncoffe, target = "noncoffee")
 df.coffee     = loadPixelData(images = hard.images.coffe, target = "coffee")
+
+cat(" - Plot: pixel distribution of hard examples \n")
 
 df.hist = rbind(df.coffee, df.non.coffee)
 hist = ggplot(df.hist, aes(value,col=channel, fill=channel, alpha = 0.5))
@@ -425,7 +431,6 @@ aux.algos = lapply(algos, function(alg) {
 df3.perf = data.frame(do.call("rbind", aux.algos))
 df3.perf$dataset = "dataset3"
 df3.perf$algo = algos
-
 
 ret.cnn = data.frame(t(c(mean(cnn.data$bac), sd(cnn.data$bac))))
 ret.cnn$dataset = "raw image"
