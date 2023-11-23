@@ -2,12 +2,20 @@
 # Required Packages
 # ---------------------------------------------
 
-cat(" - Loading required packages\n")
+dir.create(path = "./plots/", showWarnings = FALSE)
 set.seed(42)
 
+cat(" - Loading required packages\n")
 library(reshape2)
 library(ggplot2)
 library(mlr)
+
+cat(" - Loading other R files \n")
+R.files = list.files(path = "R", full.name = TRUE)
+for(file in R.files) {
+	print(file)
+	source(file)
+}
 
 # ---------------------------------------------
 # Reading Traditional ML data
@@ -15,29 +23,12 @@ library(mlr)
 
 cat(" - Reading results' data\n")
 
-data1 = read.csv("../results/performances_dataset_1.csv")
-ids = 1:nrow(data1)
-
-data1 = cbind(ids, data1)
-# ml does not work in the problem (it needs tuning)
-# data1$mlp = NULL 
-
-df1   = melt(data1, id.vars = c(1, 5, 6)) 
-df1$dataset = "dataset1"
-
-data2 = read.csv("../results/performances_dataset_2.csv")
-# ml does not work in the problem (it needs tuning)
-# data2$mlp = NULL 
-data2 = cbind(ids, data2)
-df2   = melt(data2, id.vars = c(1, 5, 6))
-df2$dataset = "dataset2"
-
-data3 = read.csv("../results/performances_dataset_3.csv")
-# ml does not work in the problem (it needs tuning)
-# data3$mlp = NULL 
-data3 = cbind(ids, data3)
-df3   = melt(data3, id.vars = c(1, 5, 6))
-df3$dataset = "dataset3"
+df1 = loadData(datapath = "../results/performances_dataset_1.csv",
+	dataname = "dataset1")
+df2 = loadData(datapath = "../results/performances_dataset_2.csv",
+	dataname = "dataset2")
+df3 = loadData(datapath = "../results/performances_dataset_3.csv",
+	dataname = "dataset3")
 
 df.full = rbind(df1, df2, df3)
 colnames(df.full) = c("ids", "rep", "algo", "measure", "value", "dataset")
@@ -49,7 +40,7 @@ colnames(df.full) = c("ids", "rep", "algo", "measure", "value", "dataset")
 cat(" - Plot: boxplot + violin plot\n")
 
 # filter results by bac
-df.bac =  dplyr::filter(df.full, measure == "bac")
+df.bac = dplyr::filter(df.full, measure == "bac")
 
 g = ggplot(df.full, aes(x = reorder(algo, -value), y = value, group = algo))
 g = g + geom_violin() + geom_boxplot(width = .15)
@@ -57,7 +48,7 @@ g = g + facet_grid(~dataset) + theme_bw()
 g = g + geom_hline(yintercept = 0.8, linetype = "dotted", colour = "red")
 g = g + labs(x = "Algorithm", y = "Balanced\nAccuracy per Class (BAC)")
 g = g + theme(axis.text.x=element_text(angle = 90, hjust = 1))
-ggsave(g, filename = "tratidional_ml_boxplot.pdf", width = 7.55, height = 3.16)
+ggsave(g, filename = "plots/tratidional_ml_boxplot.pdf", width = 7.55, height = 3.16)
 
 # ---------------------------------------------
 # Determining the best traditional ML algorithms
@@ -69,38 +60,8 @@ svm.dataset1 = dplyr::filter(df.bac, dataset == "dataset1" & algo == "SVM")
 svm.dataset2 = dplyr::filter(df.bac, dataset == "dataset2" & algo == "SVM")
 
 # Algorithm      RF         SVM
-# dataset 1 (0.8124209, 0.8166567)
-# dataset 2 (0.8211814, 0.8145776)
-
-# ---------------------------------------------
-# Best algorithms in dataset2 x CNNs 
-# ---------------------------------------------
-
-cnn.data = read.csv("../results/performances_cnn.csv")
-ids = 1:nrow(cnn.data)
-cnn.data = cbind(ids, cnn.data)
-cnn.data$algo = "CNN"
-cnn.data$dataset = "dataset2"
-
-# Algorithm      RF         SVM      CNN
-# dataset 2 (0.8211814, 0.8145776, 0.8307914)
-
-cnn.dataset2 = cnn.data[, c(1,5,6,3,7)]
-rf.dataset2$measure = NULL 
-svm.dataset2$measure = NULL
-
-colnames(rf.dataset2)  = colnames(cnn.dataset2)
-colnames(svm.dataset2) = colnames(cnn.dataset2)
-
-df2 = rbind(cnn.dataset2, rf.dataset2, svm.dataset2)
-
-g2 = ggplot(df2, aes(x = reorder(algo, -bac), y = bac, group = algo))
-g2 = g2 + geom_violin() + geom_boxplot(width = .15)
-g2 = g2 + theme_bw() 
-g2 = g2 + geom_hline(yintercept = 0.8, linetype = "dotted", colour = "red")
-g2 = g2 + labs(x = "Algorithm", y = "Balanced\nAccuracy per Class (BAC)")
-g2 = g2 + theme(axis.text.x=element_text(angle = 90, hjust = 1))
-ggsave(g2, filename = "cnn_vs_traditional_ml_boxplot.pdf", width = 4.81, height = 3.16)
+# dataset 1 (0.8113413, 0.8166567)
+# dataset 2 (0.8228451, 0.8145776)
 
 # ---------------------------------------------
 # Wilcoxon per dataset
@@ -119,7 +80,7 @@ if(obj1$p.value < 0.05) {
 	cat("There is no statistical difference between the methods!\n")
 }
 
-# P-value:  0.1680549
+# P-value: 0.09349708
 # There is no statistical difference between the methods!
 
 obj2 = suppressWarnings(wilcox.test(
@@ -131,7 +92,7 @@ if(obj2$p.value < 0.05) {
 } else {
 	cat("There is no statistical difference between the methods!\n")
 }
-# P-value:  0.01628184 
+# P-value:  0.00550026 
 # There is statistical difference between the methods!
 
 svc1 = suppressWarnings(wilcox.test(
@@ -143,7 +104,7 @@ if(svc1$p.value < 0.05) {
 } else {
 	cat("There is no statistical difference between the methods!\n")
 }
-# P-value:  0.6972963 
+# P-value:  0.6972963  
 # There is no statistical difference between the methods!
 
 rf1  = suppressWarnings(wilcox.test(
@@ -155,46 +116,108 @@ if(rf1$p.value < 0.05) {
 } else {
 	cat("There is no statistical difference between the methods!\n")
 }
-# P-value:  0.004994396
-# There is statistical difference between the methods!
-
-obj4 = suppressWarnings(wilcox.test(
-	x = rf.dataset2$value, y = cnn.data$bac, conf.level = 0.95))
-cat("P-value: ", obj4$p.value, "\n")
-cat("@ RF - Dataset2 vs CNN: ")
-if(rf1$p.value < 0.05) {
-	cat("There is statistical difference between the methods!\n")
-} else {
-	cat("There is no statistical difference between the methods!\n")
-}
-# P-value:  0.07469582 
-# There is statistical difference between the methods!
-
-obj4 = suppressWarnings(wilcox.test(
-	x = svm.dataset1$value, y = cnn.data$bac, conf.level = 0.95))
-cat("P-value: ", obj4$p.value, "\n")
-cat("@ SVM - Dataset1 vs CNN: ")
-if(rf1$p.value < 0.05) {
-	cat("There is statistical difference between the methods!\n")
-} else {
-	cat("There is no statistical difference between the methods!\n")
-}
-# P-value:  0.005769847 
+# P-value:  0.0001748091
 # There is statistical difference between the methods!
 
 # ##########
 # Summary: 
 #  - RF in dataset 2 is statistically better than SVM and 
 # 		RF in any othern dataset
-#  - CNN is statistically better than RF-dataset2 and SVM-dataset1
-# Best overall: CNN
-
-# #############################
-# Até aqui funciona de boas
-# #############################
+#  - Choose dataset 2 as baseline (RF, SVM)
 
 # ---------------------------------------------
-# Predictions Plots
+# Best algorithms in dataset2 x CNNs x VGG16
+# ---------------------------------------------
+
+cnn.data = loadDLData(datapath = "../results/performances_cnn.csv", 
+	algoname = "CNN")
+
+vgg.data = loadDLData(datapath = "../results/performances_vgg16.csv", 
+	algoname = "VGG16")
+
+# Algorithm      RF         SVM      CNN        VGG
+# dataset 2 (0.8211814, 0.8145776, 0.8307914, 0.834383)
+
+rf.dataset2$measure  = NULL 
+rf.dataset2$dataset  = NULL 
+svm.dataset2$measure = NULL
+svm.dataset2$dataset = NULL
+
+cnn.dataset2 = cnn.data[, c(1,5,6,3)]
+vgg.dataset2 = vgg.data[, c(1,5,6,3)]
+colnames(rf.dataset2)  = colnames(cnn.dataset2)
+colnames(svm.dataset2) = colnames(cnn.dataset2)
+
+df2 = rbind(cnn.dataset2, vgg.dataset2, rf.dataset2, svm.dataset2)
+
+g2 = ggplot(df2, aes(x = reorder(algo, -bac), y = bac, group = algo, fill = algo))
+g2 = g2 + geom_violin() + geom_boxplot(width = .15, fill = "white")
+g2 = g2 + theme_bw() + guides(fill = "none")
+g2 = g2 + labs(x = "Algorithm", y = "Balanced\nAccuracy per Class (BAC)")
+g2 = g2 + theme(axis.text.x=element_text(angle = 90, hjust = 1))
+ggsave(g2, filename = "plots/dl_vs_traditional_ml_boxplot.pdf", width = 4.81, height = 3.16)
+
+# ---------------------------------------------
+# Statistical tests comparing DL x Traditional ML
+# ---------------------------------------------
+
+obj4 = suppressWarnings(wilcox.test(
+	x =  rf.dataset2$bac, y = cnn.data$bac, conf.level = 0.95))
+cat("P-value: ", obj4$p.value, "\n")
+cat("@ RF - Dataset2 vs CNN: ")
+if(obj4$p.value < 0.05) {
+	cat("There is statistical difference between the methods!\n")
+} else {
+	cat("There is no statistical difference between the methods!\n")
+}
+# P-value:  0.1058117 
+# There is no statistical difference between the methods!
+
+obj5 = suppressWarnings(wilcox.test(
+	x = svm.dataset2$bac, y = cnn.data$bac, conf.level = 0.95))
+cat("P-value: ", obj5$p.value, "\n")
+cat("@ SVM - Dataset2 vs CNN: ")
+if(obj5$p.value < 0.05) {
+	cat("There is statistical difference between the methods!\n")
+} else {
+	cat("There is no statistical difference between the methods!\n")
+}
+# P-value:  0.002210278 
+# There is statistical difference between the methods!
+
+obj6 = suppressWarnings(wilcox.test(
+	x = rf.dataset2$bac, y = vgg.data$bac, conf.level = 0.95))
+cat("P-value: ", obj6$p.value, "\n")
+cat("@ SVM - Dataset2 vs VGG: ")
+if(obj6$p.value < 0.05) {
+	cat("There is statistical difference between the methods!\n")
+} else {
+	cat("There is no statistical difference between the methods!\n")
+}
+# P-value:  0.0003181467 
+# There is statistical difference between the methods!
+
+
+obj7 = suppressWarnings(wilcox.test(
+	x = vgg.data$bac, y = cnn.data$bac, conf.level = 0.95))
+cat("P-value: ", obj7$p.value, "\n")
+cat("@ VGG vs CNN: ")
+if(obj7$p.value < 0.05) {
+	cat("There is statistical difference between the methods!\n")
+} else {
+	cat("There is no statistical difference between the methods!\n")
+}
+# P-value:  0.2643196 
+# There is no statistical difference between the methods!
+
+# ##########
+# Summary: 
+#  - there is no statistical difference bewteen RF and CNN
+#  - there is no statistical difference between VGG and CN
+#  - but VGG is statistically better than RF and SVM
+
+# ---------------------------------------------
+# Predictions Plots (RF, VGG, CNN, SVM)
 # ---------------------------------------------
 
 # TODO: Need real Y, to compare with the predictions
