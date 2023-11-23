@@ -42,7 +42,7 @@ def get_folds(dataset):
 
 if __name__ == "__main__":
 
-    dataset = "dataset_1.csv"
+    dataset = "dataset_3.csv"
     print(dataset.replace(".csv", ""))
     folds = get_folds(dataset)
     print(" - Exporting a file")
