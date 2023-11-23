@@ -127,7 +127,7 @@ def trainVGG16(df):
 
 	    # Callbacks
 	    early_stopper = EarlyStopping(monitor="val_loss", mode="min", patience=10, verbose=1)
-	    csv_logger    = CSVLogger(f"./../results/vgg16/log_history_vgg16_seed_{seed}.csv", separator=",", append=False)
+	    csv_logger    = CSVLogger(f"./../results/vgg16Logs/log_history_vgg16_seed_{seed}.csv", separator=",", append=False)
 
 	    print(" - training VGG16")
 	    history  = model.fit(train_images, train_labels, epochs=100, validation_split=0.3,
