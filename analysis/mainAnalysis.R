@@ -246,20 +246,34 @@ ggsave(g3, file = "plots/dl_epochs.pdf", width = 4.46, height = 3.36)
 # ---------------------------------------------
 # ---------------------------------------------
 
-# teste
-# df.lc.cnn = do.call("rbind", cnn.learningCurves)
-# df.lc.vgg = do.call("rbind", vgg.learningCurves)
-# df.lc = rbind(df.lc.cnn, df.lc.vgg)
+df.lc.cnn = do.call("rbind", cnn.learningCurves)
+g4 = ggplot(df.lc.cnn, mapping = aes(x = epoch, y = loss, 
+	group = seed))
+g4 = g4 + geom_line() + theme_bw()
+ggsave(g4, file = "plots/cnn_loss_curves.pdf"), width = 3.47, height = 3.11)
 
-# g4 = ggplot(cnn.learningCurves[[2]], mapping = aes(x = epoch, y = accuracy, 
-	# group = seed))
-# g4 = g4 + geom_line() + theme_bw()
-# g4
+df.lc.vgg = do.call("rbind", vgg.learningCurves)
+g5 = ggplot(df.lc.vgg, mapping = aes(x = epoch, y = loss, 
+	group = seed))
+g5 = g5 + geom_line() + theme_bw()
+ggsave(g5, file = "plots/vgg_loss_curves.pdf", width = 3.47, height = 3.11)
 
 
-# curvas podem ter qtde diferente de epocas (CNN, VGG)
-# media
-# desvio padrao
+df.lc = rbind(df.lc.cnn, df.lc.vgg)
+df.lc.melted = melt(df.lc, id.vars = c(1,5,6))
+
+g6 = ggplot(df.lc.melted, mapping = aes(x = epoch, y = value, 
+	group = seed, colour = variable)) 
+g6 = g6 + facet_grid(algo~variable, scales = "free")
+g6 = g6 + geom_line() + theme_bw() + guides(colour = "none")
+ggsave(g6, file = "plots/dl_loss_curves_allmeasuers_grid.pdf", width = 5.61, height = 3.62)
+
+g7 = ggplot(df.lc.melted, mapping = aes(x = epoch, y = value, 
+	group = seed, colour = variable)) 
+g7 = g7 + facet_wrap(algo~variable, scales = "free")
+g7 = g7 + geom_line() + theme_bw() + guides(colour = "none")
+ggsave(g7, file = "plots/dl_loss_curves_allmeasuers_wrap.pdf", width = 5.61, height = 3.62)
+
 
 # ---------------------------------------------
 # Predictions Plots (RF, VGG, CNN, SVM)
