@@ -147,10 +147,10 @@ vgg.dataset2 = vgg.data[, c(1,5,6,3)]
 colnames(rf.dataset2)  = colnames(cnn.dataset2)
 colnames(svm.dataset2) = colnames(cnn.dataset2)
 
-df2 = rbind(cnn.dataset2, vgg.dataset2, rf.dataset2, svm.dataset2)
+df.temp = rbind(cnn.dataset2, vgg.dataset2, rf.dataset2, svm.dataset2)
 
 cat(" - Plot: boxplot ML vs DL \n")
-g2 = ggplot(df2, aes(x = reorder(algo, -bac), y = bac, group = algo, fill = algo))
+g2 = ggplot(df.temp, aes(x = reorder(algo, -bac), y = bac, group = algo, fill = algo))
 g2 = g2 + geom_violin() + geom_boxplot(width = .15, fill = "white")
 g2 = g2 + theme_bw() + guides(fill = "none")
 g2 = g2 + labs(x = "Algorithm", y = "Balanced\nAccuracy per Class (BAC)")
@@ -252,7 +252,7 @@ df.lc.cnn = do.call("rbind", cnn.learningCurves)
 g4 = ggplot(df.lc.cnn, mapping = aes(x = epoch, y = loss, 
 	group = seed))
 g4 = g4 + geom_line() + theme_bw()
-ggsave(g4, file = "plots/cnn_loss_curves.pdf"), width = 3.47, height = 3.11)
+ggsave(g4, file = "plots/cnn_loss_curves.pdf", width = 3.47, height = 3.11)
 
 df.lc.vgg = do.call("rbind", vgg.learningCurves)
 g5 = ggplot(df.lc.vgg, mapping = aes(x = epoch, y = loss, 
@@ -381,7 +381,7 @@ hard.images.coffee   = hard.images[which(hard.images$Y == 1),]
 # https://cran.r-project.org/web/packages/imager/vignettes/gettingstarted.html#example-1-histogram-equalisation
 
 df.non.coffee = loadPixelData(images = hard.images.noncoffe, target = "noncoffee")
-df.coffee     = loadPixelData(images = hard.images.coffe, target = "coffee")
+df.coffee     = loadPixelData(images = hard.images.coffee, target = "coffee")
 
 cat(" - Plot: pixel distribution of hard examples \n")
 

@@ -17,9 +17,12 @@
 "1225","../dataset-brazilian_coffee_scenes/images/arceburgo.T3904.B3968.L768.R832.jpg",0,1,1,1,1
 "1423","../dataset-brazilian_coffee_scenes/images/guaranesia.T9024.B9088.L3904.R3968.jpg",0,1,1,1,1
 "1452","../dataset-brazilian_coffee_scenes/images/montesanto.T3008.B3072.L6592.R6656.jpg",0,1,1,1,1
+"1522","../dataset-brazilian_coffee_scenes/images/guaxupe.T7296.B7360.L2304.R2368.jpg",0,1,1,1,1
+"1531","../dataset-brazilian_coffee_scenes/images/montesanto.T9792.B9856.L4032.R4096.jpg",0,1,1,1,1
 "1575","../dataset-brazilian_coffee_scenes/images/guaranesia.T6144.B6208.L5760.R5824.jpg",0,1,1,1,1
 "1699","../dataset-brazilian_coffee_scenes/images/arceburgo.T3968.B4032.L768.R832.jpg",0,1,1,1,1
 "1707","../dataset-brazilian_coffee_scenes/images/guaranesia.T10496.B10560.L1472.R1536.jpg",0,1,1,1,1
+"2430","../dataset-brazilian_coffee_scenes/images/montesanto.T2944.B3008.L10112.R10176.jpg",0,1,1,1,1
 "2445","../dataset-brazilian_coffee_scenes/images/montesanto.T9984.B10048.L7552.R7616.jpg",0,1,1,1,1
 "2462","../dataset-brazilian_coffee_scenes/images/montesanto.T3456.B3520.L6720.R6784.jpg",0,1,1,1,1
 "2556","../dataset-brazilian_coffee_scenes/images/montesanto.T8768.B8832.L8832.R8896.jpg",0,1,1,1,1
@@ -40,12 +43,14 @@
 "229","../dataset-brazilian_coffee_scenes/images/arceburgo.T2496.B2560.L4992.R5056.jpg",1,0,0,0,0
 "283","../dataset-brazilian_coffee_scenes/images/montesanto.T6528.B6592.L10176.R10240.jpg",1,0,0,0,0
 "298","../dataset-brazilian_coffee_scenes/images/montesanto.T5632.B5696.L9408.R9472.jpg",1,0,0,0,0
+"398","../dataset-brazilian_coffee_scenes/images/montesanto.T7040.B7104.L4032.R4096.jpg",1,0,0,0,0
 "408","../dataset-brazilian_coffee_scenes/images/guaxupe.T7552.B7616.L3392.R3456.jpg",1,0,0,0,0
 "431","../dataset-brazilian_coffee_scenes/images/montesanto.T5376.B5440.L4096.R4160.jpg",1,0,0,0,0
 "442","../dataset-brazilian_coffee_scenes/images/montesanto.T5376.B5440.L10496.R10560.jpg",1,0,0,0,0
 "494","../dataset-brazilian_coffee_scenes/images/guaranesia.T8832.B8896.L896.R960.jpg",1,0,0,0,0
 "544","../dataset-brazilian_coffee_scenes/images/guaranesia.T4224.B4288.L6784.R6848.jpg",1,0,0,0,0
 "633","../dataset-brazilian_coffee_scenes/images/guaxupe.T8192.B8256.L2880.R2944.jpg",1,0,0,0,0
+"650","../dataset-brazilian_coffee_scenes/images/montesanto.T8128.B8192.L6976.R7040.jpg",1,0,0,0,0
 "741","../dataset-brazilian_coffee_scenes/images/guaxupe.T4864.B4928.L2048.R2112.jpg",1,0,0,0,0
 "759","../dataset-brazilian_coffee_scenes/images/montesanto.T8704.B8768.L5760.R5824.jpg",1,0,0,0,0
 "768","../dataset-brazilian_coffee_scenes/images/arceburgo.T2304.B2368.L4992.R5056.jpg",1,0,0,0,0
