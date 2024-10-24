@@ -1,6 +1,6 @@
 # Crop Image Classification
 
-'coffee-image-classification' is an automated Python/R code used to perform Machine Learning (ML) experiments and their automated analysis, including plots and tables. Thus, this repository includes all the necessary files to reproduce our paper [*`Image Classification for Precision Agriculture: A Coffee Study Case`*](https://periodicos.univali.br/index.php/acotb/article/view/20331).
+`crop-image-classification` is an automated Python/R code used to perform Machine Learning (ML) experiments and their automated analysis, including plots and tables. Thus, this repository includes all the necessary files to reproduce our paper [*`Image Classification for Precision Agriculture: A Coffee Study Case`*](https://periodicos.univali.br/index.php/acotb/article/view/20331).
 
 ## Repository Structure
 
